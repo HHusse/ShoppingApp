@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ShoppingApp.Data.Models
 {
-	public class AccountsDTO
+    public class AccountDTO
     {
         public string? Uid { get; set; }
         public string? LastName { get; set; }

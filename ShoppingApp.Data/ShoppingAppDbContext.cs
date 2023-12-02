@@ -17,14 +17,14 @@ namespace Data
 
         public DbSet<OrderLineDTO> OrderLines { get; set; }
 
-        public DbSet<AccountsDTO> Accounts { get; set; }
+        public DbSet<AccountDTO> Accounts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ProductDTO>().ToTable("Products").HasKey(p => p.Uid);
             modelBuilder.Entity<OrderHeaderDTO>().ToTable("OrderHeaders").HasKey(oh => oh.Uid);
             modelBuilder.Entity<OrderLineDTO>().ToTable("OrderLines").HasKey(ol => ol.Uid);
-            modelBuilder.Entity<AccountsDTO>().ToTable("Accounts").HasKey(a => a.Uid);
+            modelBuilder.Entity<AccountDTO>().ToTable("Accounts").HasKey(a => a.Uid);
 
             modelBuilder.Entity<OrderHeaderDTO>()
                 .HasMany(e => e.OrderLines)
@@ -38,7 +38,7 @@ namespace Data
                 .HasForeignKey(e => e.Uid)
                 .HasPrincipalKey(e => e.Uid);
 
-            modelBuilder.Entity<AccountsDTO>()
+            modelBuilder.Entity<AccountDTO>()
                .HasMany(e => e.OrderHeaders)
                .WithOne(e => e.Account)
                .HasForeignKey(e => e.AccountId)

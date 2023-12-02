@@ -1,8 +1,8 @@
 ﻿using System;
 namespace ShoppingApp.Data.Models
 {
-	public class OrderHeaderDTO
-	{
+    public class OrderHeaderDTO
+    {
         public string? Uid { get; set; }
         public string? AccountId { get; set; }
         public string? Date { get; set; }
@@ -10,7 +10,7 @@ namespace ShoppingApp.Data.Models
 
         public required ICollection<OrderLineDTO> OrderLines { get; set; }
 
-        public AccountsDTO? Account { get; set; }
+        public AccountDTO? Account { get; set; }
     }
 }
 
