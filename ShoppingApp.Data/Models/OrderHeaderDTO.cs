@@ -1,5 +1,5 @@
 ﻿using System;
-namespace ShoppingApp.DataAccess.Models
+namespace ShoppingApp.Data.Models
 {
 	public class OrderHeaderDTO
 	{
@@ -7,6 +7,8 @@ namespace ShoppingApp.DataAccess.Models
         public string? AccountId { get; set; }
         public string? Date { get; set; }
         public double Total { get; set; }
+
+        public required ICollection<OrderLineDTO> OrderLines { get; set; }
     }
 }
 
