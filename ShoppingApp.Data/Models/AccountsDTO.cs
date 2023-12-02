@@ -5,12 +5,13 @@ namespace ShoppingApp.Data.Models
 {
 	public class AccountsDTO
     {
-        [Key]
-        string? Uid { get; set; }
-        string? LastName { get; set; }
-        string? FirstName { get; set; }
-        string? Email { get; set; }
-        string? Password { get; set; }
+        public string? Uid { get; set; }
+        public string? LastName { get; set; }
+        public string? FirstName { get; set; }
+        public string? Email { get; set; }
+        public string? Password { get; set; }
+
+        public required ICollection<OrderHeaderDTO> OrderHeaderss { get; set; }
     }
 }
 

@@ -17,11 +17,14 @@ namespace Data
 
         public DbSet<OrderLineDTO> OrderLines { get; set; }
 
+        public DbSet<AccountsDTO> Accounts { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ProductDTO>().ToTable("Products").HasKey(s => s.Uid);
-            modelBuilder.Entity<OrderHeaderDTO>().ToTable("OrderHeaders").HasKey(s => s.Uid);
-            modelBuilder.Entity<OrderLineDTO>().ToTable("OrderLines").HasKey(s => s.Uid);
+            modelBuilder.Entity<ProductDTO>().ToTable("Products").HasKey(p => p.Uid);
+            modelBuilder.Entity<OrderHeaderDTO>().ToTable("OrderHeaders").HasKey(oh => oh.Uid);
+            modelBuilder.Entity<OrderLineDTO>().ToTable("OrderLines").HasKey(ol=> ol.Uid);
+            modelBuilder.Entity<AccountsDTO>().ToTable("Accounts").HasKey(a => a.Uid);
 
             modelBuilder.Entity<OrderHeaderDTO>()
                 .HasMany(e => e.OrderLines)
@@ -34,6 +37,12 @@ namespace Data
                 .WithOne(e => e.Product)
                 .HasForeignKey(e => e.Uid)
                 .HasPrincipalKey(e => e.Uid);
+
+            modelBuilder.Entity<AccountsDTO>()
+               .HasMany(e => e.OrderHeaders)
+               .WithOne(e => e.Account)
+               .HasForeignKey(e => e.AccountId) 
+               .HasPrincipalKey(e => e.Uid);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

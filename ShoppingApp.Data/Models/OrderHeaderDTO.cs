@@ -9,6 +9,9 @@ namespace ShoppingApp.Data.Models
         public double Total { get; set; }
 
         public required ICollection<OrderLineDTO> OrderLines { get; set; }
+
+        public AccountsDTO? Account { get; set; }
     }
 }
+
 
