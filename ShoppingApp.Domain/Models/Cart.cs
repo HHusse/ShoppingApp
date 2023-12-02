@@ -1,11 +1,20 @@
 ﻿using System;
+using CSharp.Choices;
+
 namespace ShoppingApp.Domain.Models
 {
-    public class Cart
+    [AsChoice]
+    public static partial class Cart
     {
-        Guid Uid { get; set; }
-        string? AccountId { get; set; }
-        List<Product> Products { get; set; } = new();
+        public interface ICart { };
+        public record EmptyCart() : ICart;
+        public class PendingCart : ICart
+        {
+            List<string> products = new();
+        }
+        public record ValidatedCart(IReadOnlyCollection<Product> products) : ICart;
+        public record CalculatedCart(IReadOnlyCollection<Product> products, double price) : ICart;
+        public record PaidCart(IReadOnlyCollection<Product> products, double finalPrice, DateTime data) : ICart;
     }
 }
 
