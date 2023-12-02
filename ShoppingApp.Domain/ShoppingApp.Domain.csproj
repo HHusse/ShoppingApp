@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <None Remove="Models\" />
+    <None Remove="Workflows\" />
+    <None Remove="Services\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="Workflows\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CSharp.Choices" Version="2.1.1" />

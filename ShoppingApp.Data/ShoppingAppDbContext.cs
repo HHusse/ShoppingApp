@@ -23,7 +23,7 @@ namespace Data
         {
             modelBuilder.Entity<ProductDTO>().ToTable("Products").HasKey(p => p.Uid);
             modelBuilder.Entity<OrderHeaderDTO>().ToTable("OrderHeaders").HasKey(oh => oh.Uid);
-            modelBuilder.Entity<OrderLineDTO>().ToTable("OrderLines").HasKey(ol=> ol.Uid);
+            modelBuilder.Entity<OrderLineDTO>().ToTable("OrderLines").HasKey(ol => ol.Uid);
             modelBuilder.Entity<AccountsDTO>().ToTable("Accounts").HasKey(a => a.Uid);
 
             modelBuilder.Entity<OrderHeaderDTO>()
@@ -41,7 +41,7 @@ namespace Data
             modelBuilder.Entity<AccountsDTO>()
                .HasMany(e => e.OrderHeaders)
                .WithOne(e => e.Account)
-               .HasForeignKey(e => e.AccountId) 
+               .HasForeignKey(e => e.AccountId)
                .HasPrincipalKey(e => e.Uid);
         }
 
