@@ -10,7 +10,7 @@ namespace ShoppingApp.Domain.Models
         public record EmptyCart() : ICart;
         public class PendingCart : ICart
         {
-            List<string> products = new();
+            public List<string> products = new();
         }
         public record ValidatedCart(IReadOnlyCollection<Product> products) : ICart;
         public record CalculatedCart(IReadOnlyCollection<Product> products, double price) : ICart;
