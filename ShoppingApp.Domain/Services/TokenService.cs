@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using ShoppingApp.Domain.Models;
+using LanguageExt;
 
 namespace ShoppingApp.Domain.Services
 {
@@ -28,6 +29,21 @@ namespace ShoppingApp.Domain.Services
             var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
 
             return jwtToken;
+        }
+
+        public static Option<string> ExtractAccountID(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+
+            Claim? accountID = jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
+
+            if (accountID != null)
+            {
+                return Option<string>.Some(accountID.Value);
+            }
+
+            return Option<string>.None;
         }
     }
 }
