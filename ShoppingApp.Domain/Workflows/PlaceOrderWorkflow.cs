@@ -8,5 +8,11 @@ namespace ShoppingApp.Domain.Workflows
 {
     internal class PlaceOrderWorkflow
     {
+        //primeste obiect de tip cart
+        //validam cosul
+            //request pentru produsele din cos
+        //daca e ok returnam true ?
+
+
     }
 }
