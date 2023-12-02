@@ -30,6 +30,14 @@ namespace ShoppingApp.Domain
 		{
 			return pendingCarts.Remove(accountID, out _);
 		}
+
+		public static async Task<PendingCart> GetCart(string accountID)
+		{
+            await CreateNewCart(accountID);
+            PendingCart cart;
+            pendingCarts.TryGetValue(accountID, out cart);
+			return cart;
+        }
 	}
 }
 
