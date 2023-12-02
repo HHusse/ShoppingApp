@@ -30,7 +30,14 @@ namespace ShoppingApp.Domain.Services
 
         public async Task<bool> RegisterAccount()
         {
-            await accountRepository.CreateAccount(AccountMapper.MapToAccountDTO(Account!));
+            try
+            {
+                await accountRepository.CreateAccount(AccountMapper.MapToAccountDTO(Account!));
+            }
+            catch (Exception)
+            {
+                return false;
+            }
             return true;
         }
 
