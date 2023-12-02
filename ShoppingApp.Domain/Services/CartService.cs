@@ -9,7 +9,7 @@ using static ShoppingApp.Domain.Models.Cart;
 
 namespace ShoppingApp.Domain.Services
 {
-    internal class CartServices
+    internal class CartService
     {
         ProductService productService;
         public static ICart AddProductToCart (EmptyCart emptyCart, string product)
