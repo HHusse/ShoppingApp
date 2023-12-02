@@ -13,7 +13,7 @@ using ShoppingApp.Domain.Mappers;
 
 namespace ShoppingApp.Domain.Services
 {
-    internal class ProductService
+    public class ProductService
     {
         private readonly ShoppingAppDbContext _dbContext;
         ProductRepository productRepository;
