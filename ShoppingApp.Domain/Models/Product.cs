@@ -11,10 +11,10 @@ namespace ShoppingApp.Domain.Models
             Price = price;
         }
 
-        string? Uid { get; set; }
-        string? Name { get; set; }
-        string? Description { get; set; }
-        double Price { get; set; }
+        public string? Uid { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public double Price { get; set; }
     }
 }
 
