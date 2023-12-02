@@ -25,7 +25,9 @@ namespace Data
             modelBuilder.Entity<OrderHeaderDTO>().ToTable("OrderHeaders").HasKey(oh => oh.Uid);
             modelBuilder.Entity<OrderLineDTO>().ToTable("OrderLines").HasKey(ol => ol.Uid);
             modelBuilder.Entity<AccountDTO>().ToTable("Accounts").HasKey(a => a.Uid);
-
+            modelBuilder.Entity<AccountDTO>()
+                .HasIndex(a => a.Email)
+                .IsUnique();
             modelBuilder.Entity<OrderHeaderDTO>()
                 .HasMany(e => e.OrderLines)
                 .WithOne(e => e.OrderHeader)

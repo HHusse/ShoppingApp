@@ -12,11 +12,20 @@ namespace ShoppingApp.Domain.Models
             this.Password = password;
         }
 
-        Guid Uid { get; set; }
-        string? LastName { get; set; }
-        string? FirstName { get; set; }
-        string? Email { get; set; }
-        string? Password { get; set; }
+        public Account(string? lastName, string? firstName, string? email, string? password)
+        {
+            Uid = Guid.NewGuid();
+            this.LastName = lastName;
+            this.FirstName = firstName;
+            this.Email = email;
+            this.Password = password;
+        }
+
+        public Guid Uid { get; set; }
+        public string? LastName { get; set; }
+        public string? FirstName { get; set; }
+        public string? Email { get; set; }
+        public string? Password { get; set; }
     }
 }
 
