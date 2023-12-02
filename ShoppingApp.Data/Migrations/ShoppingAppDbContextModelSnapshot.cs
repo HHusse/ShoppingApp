@@ -21,7 +21,7 @@ namespace ShoppingApp.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ShoppingApp.Data.Models.AccountsDTO", b =>
+            modelBuilder.Entity("ShoppingApp.Data.Models.AccountDTO", b =>
                 {
                     b.Property<string>("Uid")
                         .HasColumnType("nvarchar(450)");
@@ -107,7 +107,7 @@ namespace ShoppingApp.Data.Migrations
 
             modelBuilder.Entity("ShoppingApp.Data.Models.OrderHeaderDTO", b =>
                 {
-                    b.HasOne("ShoppingApp.Data.Models.AccountsDTO", "Account")
+                    b.HasOne("ShoppingApp.Data.Models.AccountDTO", "Account")
                         .WithMany("OrderHeaders")
                         .HasForeignKey("AccountId");
 
@@ -133,7 +133,7 @@ namespace ShoppingApp.Data.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("ShoppingApp.Data.Models.AccountsDTO", b =>
+            modelBuilder.Entity("ShoppingApp.Data.Models.AccountDTO", b =>
                 {
                     b.Navigation("OrderHeaders");
                 });
