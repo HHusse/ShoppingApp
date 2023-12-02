@@ -1,5 +1,5 @@
 ﻿using System;
-namespace ShoppingApp.DataAccess.Models
+namespace ShoppingApp.Data.Models
 {
 	public class OrderLineDTO
 	{
