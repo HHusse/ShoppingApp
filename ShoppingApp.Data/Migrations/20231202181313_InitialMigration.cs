@@ -11,17 +11,18 @@ namespace ShoppingApp.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "OrderHeaders",
+                name: "Accounts",
                 columns: table => new
                 {
                     Uid = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AccountId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Date = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Total = table.Column<double>(type: "float", nullable: false)
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderHeaders", x => x.Uid);
+                    table.PrimaryKey("PK_Accounts", x => x.Uid);
                 });
 
             migrationBuilder.CreateTable(
@@ -36,6 +37,25 @@ namespace ShoppingApp.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Uid);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderHeaders",
+                columns: table => new
+                {
+                    Uid = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AccountId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Date = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Total = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderHeaders", x => x.Uid);
+                    table.ForeignKey(
+                        name: "FK_OrderHeaders_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Uid");
                 });
 
             migrationBuilder.CreateTable(
@@ -64,6 +84,11 @@ namespace ShoppingApp.Data.Migrations
                         principalColumn: "Uid",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderHeaders_AccountId",
+                table: "OrderHeaders",
+                column: "AccountId");
         }
 
         /// <inheritdoc />
@@ -77,6 +102,9 @@ namespace ShoppingApp.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Accounts");
         }
     }
 }

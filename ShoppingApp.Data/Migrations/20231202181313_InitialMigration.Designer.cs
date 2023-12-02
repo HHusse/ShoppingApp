@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ShoppingApp.Data.Migrations
 {
     [DbContext(typeof(ShoppingAppDbContext))]
-    [Migration("20231202175014_InitialMigration")]
+    [Migration("20231202181313_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -24,13 +24,35 @@ namespace ShoppingApp.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ShoppingApp.Data.Models.AccountsDTO", b =>
+                {
+                    b.Property<string>("Uid")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Uid");
+
+                    b.ToTable("Accounts", (string)null);
+                });
+
             modelBuilder.Entity("ShoppingApp.Data.Models.OrderHeaderDTO", b =>
                 {
                     b.Property<string>("Uid")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AccountId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Date")
                         .HasColumnType("nvarchar(max)");
@@ -39,6 +61,8 @@ namespace ShoppingApp.Data.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("Uid");
+
+                    b.HasIndex("AccountId");
 
                     b.ToTable("OrderHeaders", (string)null);
                 });
@@ -84,6 +108,15 @@ namespace ShoppingApp.Data.Migrations
                     b.ToTable("Products", (string)null);
                 });
 
+            modelBuilder.Entity("ShoppingApp.Data.Models.OrderHeaderDTO", b =>
+                {
+                    b.HasOne("ShoppingApp.Data.Models.AccountsDTO", "Account")
+                        .WithMany("OrderHeaders")
+                        .HasForeignKey("AccountId");
+
+                    b.Navigation("Account");
+                });
+
             modelBuilder.Entity("ShoppingApp.Data.Models.OrderLineDTO", b =>
                 {
                     b.HasOne("ShoppingApp.Data.Models.OrderHeaderDTO", "OrderHeader")
@@ -101,6 +134,11 @@ namespace ShoppingApp.Data.Migrations
                     b.Navigation("OrderHeader");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("ShoppingApp.Data.Models.AccountsDTO", b =>
+                {
+                    b.Navigation("OrderHeaders");
                 });
 
             modelBuilder.Entity("ShoppingApp.Data.Models.OrderHeaderDTO", b =>
