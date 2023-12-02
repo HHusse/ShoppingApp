@@ -4,7 +4,7 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Data.Models;
 
-namespace ShoppingApp.Data.Repositorys
+namespace ShoppingApp.Data.Repositories
 {
     public class AccountRepository
     {

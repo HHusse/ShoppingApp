@@ -2,7 +2,7 @@
 using Data;
 using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Data.Models;
-using ShoppingApp.Data.Repositorys;
+using ShoppingApp.Data.Repositories;
 using ShoppingApp.Domain.Mappers;
 using ShoppingApp.Domain.Models;
 
