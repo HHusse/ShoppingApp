@@ -32,8 +32,8 @@ namespace ShoppingApp.API.Controllers
                     );
 
                 AddProductsWorkflow workflow = new(_dbContext);
-                await workflow.Execute(accountID, productCode);
-                return StatusCode(201);
+                bool succeded = await workflow.Execute(accountID, productCode);
+                return succeded ? StatusCode(201) : StatusCode(403);
             }
 
             return StatusCode(404);

@@ -21,19 +21,21 @@ namespace ShoppingApp.Domain.Workflows
             searchedCart.Match(
                 whenEmptyCart: @event =>
                 {
+                    succeded = true;
                     Task.Run(async () =>
                     {
                         await CartsRepository.ChangeCartState(accountID, new PendingCart());
-                        succeded = await CartsRepository.AddNewProduct(accountID, product);
+                        await CartsRepository.AddNewProduct(accountID, product);
                     });
 
                     return @event;
                 },
                 whenPendingCart: @event =>
                 {
+                    succeded = true;
                     Task.Run(async () =>
                     {
-                        succeded = await CartsRepository.AddNewProduct(accountID, product);
+                        await CartsRepository.AddNewProduct(accountID, product);
                     });
 
                     return @event;
