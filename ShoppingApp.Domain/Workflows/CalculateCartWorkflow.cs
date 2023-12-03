@@ -1,6 +1,7 @@
 ﻿using System;
 using Data;
 using ShoppingApp.Domain.Models;
+using ShoppingApp.Domain.Services;
 using static ShoppingApp.Domain.Models.Cart;
 
 namespace ShoppingApp.Domain.Workflows
@@ -16,6 +17,7 @@ namespace ShoppingApp.Domain.Workflows
 
         public async Task<bool> Execute(string accountID, string product)
         {
+            CartService service = new(_dbContext);
             ICart searchedCart = await CartsRepository.GetCart(accountID);
 
             bool succeded = false;
@@ -32,11 +34,11 @@ namespace ShoppingApp.Domain.Workflows
                 },
                 whenValidatedCart: validatedCart =>
                 {
+                    succeded = true;
                     Task.Run(async () =>
                     {
-                        double sum = validatedCart.products.Sum(product => product.Price);
-                        CalculatedCart calculatedCart = new(validatedCart.products, sum);
-                        succeded = await CartsRepository.ChangeCartState(accountID, calculatedCart);
+                        CalculatedCart newCart = (CalculatedCart)await service.CalculateCart(validatedCart);
+                        succeded = await CartsRepository.ChangeCartState(accountID, newCart);
                     });
                     return validatedCart;
                 },

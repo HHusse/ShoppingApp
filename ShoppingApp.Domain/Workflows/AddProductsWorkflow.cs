@@ -16,7 +16,51 @@ namespace ShoppingApp.Domain.Workflows
         public async Task<bool> Execute(string accountID, string productCode)
         {
             CartService service = new(_dbContext);
-            return await service.AddProductToCart(accountID, productCode);
+             
+            ICart searchedCart = await CartsRepository.GetCart(accountID);
+
+            bool succeded = false;
+            searchedCart.Match(
+                whenEmptyCart: @event =>
+                {
+                    succeded = true;
+                    Task.Run(async () =>
+                    {
+                        await CartsRepository.ChangeCartState(accountID, new PendingCart());
+                        await CartsRepository.AddNewProduct(accountID, productCode);
+                    });
+
+                    return @event;
+                },
+                whenPendingCart: pendingCart =>
+                {
+                    succeded = true;
+                    Task.Run(async () =>
+                    {
+                        await service.AddProductToCart(pendingCart, productCode);
+                        await CartsRepository.ChangeCartState(accountID, pendingCart);
+                    });
+
+                    return pendingCart;
+                },
+                whenValidatedCart: @event =>
+                {
+                    succeded = false;
+                    return @event;
+                },
+                whenCalculatedCart: @event =>
+                {
+                    succeded = false;
+                    return @event;
+                },
+                whenPaidCart: @event =>
+                {
+                    succeded = false;
+                    return @event;
+                }
+            );
+
+            return succeded;
         }
     }
 }

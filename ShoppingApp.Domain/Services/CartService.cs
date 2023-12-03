@@ -23,63 +23,17 @@ namespace ShoppingApp.Domain.Services
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             productService = new(_dbContext);
         }
-        public async Task<bool> AddProductToCart(string accountID, string productCode)
+
+        public async Task<bool> AddProductToCart(PendingCart cart, string productCode)
         {
-            ICart searchedCart = await CartsRepository.GetCart(accountID);
-
-            bool succeded = false;
-            searchedCart.Match(
-                whenEmptyCart: @event =>
-                {
-                    succeded = true;
-                    Task.Run(async () =>
-                    {
-                        await CartsRepository.ChangeCartState(accountID, new PendingCart());
-                        await CartsRepository.AddNewProduct(accountID, productCode);
-                    });
-
-                    return @event;
-                },
-                whenPendingCart: @event =>
-                {
-                    succeded = true;
-                    Task.Run(async () =>
-                    {
-                        await CartsRepository.AddNewProduct(accountID, productCode);
-                    });
-
-                    return @event;
-                },
-                whenValidatedCart: @event =>
-                {
-                    succeded = false;
-                    return @event;
-                },
-                whenCalculatedCart: @event =>
-                {
-                    succeded = false;
-                    return @event;
-                },
-                whenPaidCart: @event =>
-                {
-                    succeded = false;
-                    return @event;
-                }
-            );
-
-            return succeded;
+            int count = cart.products.Count();
+            cart.products.Add(productCode);
+            return (count + 1) == cart.products.Count();
         }
 
-        public static ICart AddProductToCart(PendingCart pendingCart, string product)
+        public async Task<bool> RemoveProductFromCart(PendingCart cart, string productCode)
         {
-            pendingCart.products.Add(product);
-            return pendingCart;
-        }
-
-        public static ICart RemoveProductFromCart(PendingCart pendingCart, string product)
-        {
-            pendingCart.products.Remove(product);
-            return pendingCart;
+            return cart.products.Remove(productCode);
         }
 
         public async Task<ICart> ValidateCart(PendingCart pendingCart)
@@ -104,6 +58,13 @@ namespace ShoppingApp.Domain.Services
             ValidatedCart validatedCart = new(products);
             return validatedCart;
 
+        }
+
+        public async Task<ICart> CalculateCart(ValidatedCart validatedCart)
+        {
+            double sum = validatedCart.products.Sum(product => product.Price);
+            CalculatedCart calculatedCart = new(validatedCart.products, sum);
+            return calculatedCart;
         }
     }
 }

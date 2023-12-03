@@ -1,5 +1,6 @@
 ﻿using System;
 using Data;
+using ShoppingApp.Domain.Services;
 using static ShoppingApp.Domain.Models.Cart;
 
 namespace ShoppingApp.Domain.Workflows
@@ -13,8 +14,9 @@ namespace ShoppingApp.Domain.Workflows
             _dbContext = dbContext;
         }
 
-        public async Task<bool> Execute(string accountID, string product)
+        public async Task<bool> Execute(string accountID, string productCode)
         {
+            CartService service = new(_dbContext);
             ICart searchedCart = await CartsRepository.GetCart(accountID);
 
             bool succeded = false;
@@ -24,14 +26,16 @@ namespace ShoppingApp.Domain.Workflows
                     succeded = false;
                     return @event;
                 },
-                whenPendingCart: @event =>
+                whenPendingCart: pendingCart =>
                 {
+                    succeded = true;
                     Task.Run(async () =>
                     {
-                        succeded = await CartsRepository.RemoveProduct(accountID, product);
+                        await service.RemoveProductFromCart(pendingCart, productCode);
+                        await CartsRepository.ChangeCartState(accountID, pendingCart);
                     });
 
-                    return @event;
+                    return pendingCart;
                 },
                 whenValidatedCart: @event =>
                 {
