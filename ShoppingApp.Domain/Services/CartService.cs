@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,6 +66,13 @@ namespace ShoppingApp.Domain.Services
             double sum = validatedCart.products.Sum(product => product.Price);
             CalculatedCart calculatedCart = new(validatedCart.products, sum);
             return calculatedCart;
+        }
+
+        public async Task<ICart> PayCart(CalculatedCart calculatedCart)
+        {
+            DateTime date = DateTime.Now;
+            PaidCart paidCart = new(calculatedCart.products, calculatedCart.price, date);
+            return paidCart;
         }
     }
 }
