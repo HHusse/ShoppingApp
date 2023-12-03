@@ -13,10 +13,14 @@ namespace ShoppingApp.Domain.Services
     public class OrderService
     {
         private readonly ShoppingAppDbContext _dbContext;
+        OrderHeaderRepository orderHeaderRepository;
+        OrderLineRepository orderLineRepository;
 
         public OrderService(ShoppingAppDbContext dbContext)
         {
             _dbContext = dbContext;
+            orderHeaderRepository = new(_dbContext);
+            orderLineRepository = new(_dbContext);
         }
 
         private struct ProductInfo
@@ -32,31 +36,12 @@ namespace ShoppingApp.Domain.Services
         }
         public async Task PlaceOrder(string accountID, PaidCart paidCart)
         {
-            OrderHeaderRepository orderHeaderRepository = new(_dbContext);
-            OrderLineRepository orderLineRepository = new(_dbContext);
-            
-            Dictionary<string,ProductInfo> productList = new Dictionary<string,ProductInfo>();
             string headerUid = await orderHeaderRepository.CreateNewOrderHeader(accountID, paidCart.data.ToString(), paidCart.finalPrice);
-            foreach(var product in paidCart.products)
+            foreach (var product in paidCart.products)
             {
-                if(productList.ContainsKey(product.Uid))
-                {
-                    var productInfo = productList[product.Uid];
-                    productInfo.Quantity++;
-                    productInfo.Price += product.Price;
-
-                    productList[product.Uid] = productInfo;
-                }
-                else
-                {
-                    productList.Add(product.Uid,new ProductInfo(1,product.Price));
-                }
+                await orderLineRepository.AddProductLine(product.Quantity, product.Price, headerUid, product.Uid);
             }
 
-            foreach(var product in productList)
-            {
-                await orderLineRepository.AddProductLine(product.Value.Quantity, product.Value.Price, headerUid, product.Key);
-            }
         }
     }
 }

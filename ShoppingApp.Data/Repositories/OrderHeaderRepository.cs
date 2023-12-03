@@ -27,7 +27,6 @@ namespace ShoppingApp.Data.Repositories
                 AccountId = accountID,
                 Date = date,
                 Total = total,
-                OrderLines = new List<OrderLineDTO>()
             };
             await _dbContext.OrderHeaders.AddAsync(orderHeader);
             _dbContext.SaveChanges();

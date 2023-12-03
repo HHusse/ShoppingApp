@@ -31,13 +31,13 @@ namespace Data
             modelBuilder.Entity<OrderHeaderDTO>()
                 .HasMany(e => e.OrderLines)
                 .WithOne(e => e.OrderHeader)
-                .HasForeignKey(e => e.Uid)
-            .HasPrincipalKey(e => e.Uid);
+                .HasForeignKey(e => e.OrderHeaderUid)
+                .HasPrincipalKey(e => e.Uid);
 
             modelBuilder.Entity<ProductDTO>()
                 .HasMany(e => e.OrderLines)
                 .WithOne(e => e.Product)
-                .HasForeignKey(e => e.Uid)
+                .HasForeignKey(e => e.ProductUid)
                 .HasPrincipalKey(e => e.Uid);
 
             modelBuilder.Entity<AccountDTO>()

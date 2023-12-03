@@ -44,6 +44,8 @@ namespace ShoppingApp.API
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRETKEY")!))
                 }
             );
+            var dbContext = new ShoppingAppDbContext();
+            dbContext.Database.Migrate();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

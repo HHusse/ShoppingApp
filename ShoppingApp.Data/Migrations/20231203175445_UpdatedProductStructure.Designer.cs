@@ -3,6 +3,7 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ShoppingApp.Data.Migrations
 {
     [DbContext(typeof(ShoppingAppDbContext))]
-    partial class ShoppingAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231203175445_UpdatedProductStructure")]
+    partial class UpdatedProductStructure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,23 +83,19 @@ namespace ShoppingApp.Data.Migrations
 
                     b.Property<string>("OrderHeaderUid")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
                     b.Property<string>("ProductUid")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("Uid");
-
-                    b.HasIndex("OrderHeaderUid");
-
-                    b.HasIndex("ProductUid");
 
                     b.ToTable("OrderLines", (string)null);
                 });
@@ -140,13 +139,13 @@ namespace ShoppingApp.Data.Migrations
                 {
                     b.HasOne("ShoppingApp.Data.Models.OrderHeaderDTO", "OrderHeader")
                         .WithMany("OrderLines")
-                        .HasForeignKey("OrderHeaderUid")
+                        .HasForeignKey("Uid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ShoppingApp.Data.Models.ProductDTO", "Product")
                         .WithMany("OrderLines")
-                        .HasForeignKey("ProductUid")
+                        .HasForeignKey("Uid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -42,6 +42,12 @@ namespace ShoppingApp.Domain.Services
             List<Product> products = new List<Product>();
             foreach (var product in pendingCart.products)
             {
+                if (products.Exists(p => p.Uid == product))
+                {
+                    products.First(p => p.Uid == product).Quantity++;
+                    continue;
+                }
+
                 var validatedProduct = await productService.ValidateProduct(product);
 
                 Product newProduct = validatedProduct.Match(
@@ -53,9 +59,15 @@ namespace ShoppingApp.Domain.Services
                 {
                     return pendingCart;
                 }
+                newProduct.Quantity = 1;
                 products.Add(newProduct);
 
             }
+            foreach (var product in products)
+            {
+                product.Price = product.Price * product.Quantity;
+            }
+
             ValidatedCart validatedCart = new(products);
             return validatedCart;
 

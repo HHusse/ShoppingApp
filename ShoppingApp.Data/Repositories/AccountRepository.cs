@@ -18,7 +18,7 @@ namespace ShoppingApp.Data.Repositories
         public async Task<bool> CreateAccount(AccountDTO newAccount)
         {
             await _dbContext.Accounts.AddAsync(newAccount);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
             return true;
         }
 

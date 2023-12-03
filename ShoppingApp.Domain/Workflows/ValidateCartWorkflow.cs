@@ -30,12 +30,12 @@ namespace ShoppingApp.Domain.Workflows
                 },
                 whenPendingCart: pendingCart =>
                 {
-                    ICart cart = service.ValidateCart((PendingCart)searchedCart).Result;
-                    if(cart is ValidatedCart)
+                    ICart cart = service.ValidateCart(pendingCart).Result;
+                    if (cart is ValidatedCart)
                     {
                         succeded = CartsRepository.ChangeCartState(accountID, cart).Result;
                     }
-                    
+
                     return pendingCart;
                 },
                 whenValidatedCart: @event =>

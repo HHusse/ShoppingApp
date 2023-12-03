@@ -1,4 +1,5 @@
 ﻿using Data;
+using Microsoft.Identity.Client;
 using ShoppingApp.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -21,14 +22,26 @@ namespace ShoppingApp.Data.Repositories
         {
             string uid = Guid.NewGuid().ToString();
 
-            OrderLineDTO orderLineDTO = new();
-            orderLineDTO.Quantity = quantity;
-            orderLineDTO.Price = price;
-            orderLineDTO.Uid = uid;
-            orderLineDTO.ProductUid = productUid;
-            orderLineDTO.OrderHeaderUid = orderHeaderUid;
-            await _dbContext.OrderLines.AddAsync(orderLineDTO);
-            _dbContext.SaveChanges();
+            OrderLineDTO orderLineDTO = new OrderLineDTO
+            {
+                Uid = uid,
+                Quantity = quantity,
+                Price = price,
+                ProductUid = productUid,
+                OrderHeaderUid = orderHeaderUid
+            };
+
+            try
+            {
+                await _dbContext.OrderLines.AddAsync(orderLineDTO);
+                _dbContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding order line: {ex.Message}");
+                Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
+                throw;
+            }
         }
     }
 }

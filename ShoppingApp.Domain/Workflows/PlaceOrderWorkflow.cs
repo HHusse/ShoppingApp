@@ -47,8 +47,8 @@ namespace ShoppingApp.Domain.Workflows
                 },
                 whenPaidCart: paidCart =>
                 {
-                    service.PlaceOrder(accountID,paidCart).RunSynchronously();
-                    CartsRepository.RemoveCart(accountID).RunSynchronously();
+                    service.PlaceOrder(accountID, paidCart);
+                    CartsRepository.RemoveCart(accountID);
                     succeded = true;
                     return paidCart;
                 }

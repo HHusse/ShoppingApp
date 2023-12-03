@@ -19,6 +19,7 @@ namespace ShoppingApp.Domain.Mappers
                 productDTO.Uid,
                 productDTO.Name,
                 productDTO.Description,
+                productDTO.Quantity,
                 productDTO.Price
             );
         }
@@ -33,7 +34,9 @@ namespace ShoppingApp.Domain.Mappers
                 Uid = product.Uid,
                 Name = product.Name,
                 Description = product.Description,
+                Quantity = product.Quantity,
                 Price = product.Price,
+
                 OrderLines = new List<OrderLineDTO>()
             };
         }
