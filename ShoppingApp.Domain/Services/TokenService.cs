@@ -21,7 +21,10 @@ namespace ShoppingApp.Domain.Services
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
 
+            var issuer = "ShoppingApp";
+
             var token = new JwtSecurityToken(
+                    issuer: issuer,
                     claims: claims,
                     expires: DateTime.Now.AddDays(1),
                     signingCredentials: creds
