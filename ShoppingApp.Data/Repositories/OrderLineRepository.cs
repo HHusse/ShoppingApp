@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Data;
+using ShoppingApp.Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +10,25 @@ namespace ShoppingApp.Data.Repositories
 {
     public class OrderLineRepository
     {
+        private readonly ShoppingAppDbContext _dbContext;
+
+        public OrderLineRepository(ShoppingAppDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+        public async Task AddProductLine(int quantity, double price, string orderHeaderUid, string productUid)
+        {
+            string uid = Guid.NewGuid().ToString();
+
+            OrderLineDTO orderLineDTO = new();
+            orderLineDTO.Quantity = quantity;
+            orderLineDTO.Price = price;
+            orderLineDTO.Uid = uid;
+            orderLineDTO.ProductUid = productUid;
+            orderLineDTO.OrderHeaderUid = orderHeaderUid;
+            await _dbContext.OrderLines.AddAsync(orderLineDTO);
+            _dbContext.SaveChanges();
+        }
     }
 }

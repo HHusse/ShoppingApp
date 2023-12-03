@@ -14,7 +14,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
-    <Folder Include="Workflows\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CSharp.Choices" Version="2.1.1" />
