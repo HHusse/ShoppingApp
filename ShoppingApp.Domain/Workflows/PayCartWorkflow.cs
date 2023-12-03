@@ -10,7 +10,7 @@ using static ShoppingApp.Domain.Models.Cart;
 
 namespace ShoppingApp.Domain.Workflows
 {
-    internal class PayCartWorkflow
+    public class PayCartWorkflow
     {
         private readonly ShoppingAppDbContext _dbContext;
 
