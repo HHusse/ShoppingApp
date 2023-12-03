@@ -15,12 +15,14 @@ namespace ShoppingApp.Domain.Services
         private readonly ShoppingAppDbContext _dbContext;
         OrderHeaderRepository orderHeaderRepository;
         OrderLineRepository orderLineRepository;
+        ProductRepository productRepository;
 
         public OrderService(ShoppingAppDbContext dbContext)
         {
             _dbContext = dbContext;
             orderHeaderRepository = new(_dbContext);
             orderLineRepository = new(_dbContext);
+            productRepository = new(_dbContext);
         }
 
         private struct ProductInfo
@@ -40,6 +42,7 @@ namespace ShoppingApp.Domain.Services
             foreach (var product in paidCart.products)
             {
                 await orderLineRepository.AddProductLine(product.Quantity, product.Price, headerUid, product.Uid);
+                await productRepository.RemoveQuantity(product.Uid, product.Quantity);
             }
 
         }

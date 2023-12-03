@@ -18,10 +18,30 @@ namespace ShoppingApp.Data.Repositories
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<ProductDTO> SearchProduct(string? productCode)
+        public async Task<ProductDTO> SearchProduct(string productCode)
         {
             ProductDTO productDTO = await _dbContext.Products.FirstOrDefaultAsync(product => product.Uid == productCode);
             return productDTO;
+        }
+
+        public async Task RemoveQuantity(string productCode, int quantity)
+        {
+            ProductDTO productDTO = await _dbContext.Products.FirstOrDefaultAsync(product => product.Uid == productCode);
+            if (productDTO is not null)
+            {
+                productDTO.Quantity = productDTO.Quantity - quantity;
+                _dbContext.SaveChanges();
+            }
+        }
+
+        public async Task<bool> VerifyQunatity(string productCode, int quantity)
+        {
+            ProductDTO productDTO = await _dbContext.Products.FirstOrDefaultAsync(product => product.Uid == productCode);
+            if (productDTO.Quantity < quantity)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -31,17 +31,8 @@ namespace ShoppingApp.Data.Repositories
                 OrderHeaderUid = orderHeaderUid
             };
 
-            try
-            {
-                await _dbContext.OrderLines.AddAsync(orderLineDTO);
-                _dbContext.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error adding order line: {ex.Message}");
-                Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
-                throw;
-            }
+            await _dbContext.OrderLines.AddAsync(orderLineDTO);
+            _dbContext.SaveChanges();
         }
     }
 }

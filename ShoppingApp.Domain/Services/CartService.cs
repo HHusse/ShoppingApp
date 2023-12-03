@@ -39,6 +39,11 @@ namespace ShoppingApp.Domain.Services
 
         public async Task<ICart> ValidateCart(PendingCart pendingCart)
         {
+            if (pendingCart.products.Count == 0)
+            {
+                return pendingCart;
+            }
+
             List<Product> products = new List<Product>();
             foreach (var product in pendingCart.products)
             {
@@ -65,6 +70,11 @@ namespace ShoppingApp.Domain.Services
             }
             foreach (var product in products)
             {
+                bool isEnough = await productService.VerifyQunatity(product.Uid, product.Quantity);
+                if (!isEnough)
+                {
+                    return pendingCart;
+                }
                 product.Price = product.Price * product.Quantity;
             }
 

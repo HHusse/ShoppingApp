@@ -29,5 +29,9 @@ namespace ShoppingApp.Domain.Services
             return validatedProduct == null ? Option<Product>.None : Option<Product>.Some(validatedProduct);
 
         }
+        public async Task<bool> VerifyQunatity(string productCode, int quantity)
+        {
+            return await productRepository.VerifyQunatity(productCode, quantity);
+        }
     }
 }
