@@ -18,77 +18,42 @@ namespace ShoppingApp.Domain.Workflows
 
         public async Task<bool> Execute(string accountID)
         {
+            CartService service = new(_dbContext);
             ICart searchedCart = await CartsRepository.GetCart(accountID);
 
-            bool isPendingCart = false;
+            bool succeded = false;
             searchedCart.Match(
                 whenEmptyCart: @event =>
                 {
-                    isPendingCart = false;
+                    succeded = false;
                     return @event;
                 },
-                whenPendingCart: @event =>
+                whenPendingCart: pendingCart =>
                 {
-                    isPendingCart = true;
-                    return @event;
+                    ICart cart = service.ValidateCart((PendingCart)searchedCart).Result;
+                    if(cart is ValidatedCart)
+                    {
+                        succeded = CartsRepository.ChangeCartState(accountID, cart).Result;
+                    }
+                    
+                    return pendingCart;
                 },
                 whenValidatedCart: @event =>
                 {
-                    isPendingCart = false;
+                    succeded = false;
                     return @event;
                 },
                 whenCalculatedCart: @event =>
                 {
-                    isPendingCart = false;
+                    succeded = false;
                     return @event;
                 },
                 whenPaidCart: @event =>
                 {
-                    isPendingCart = false;
+                    succeded = false;
                     return @event;
                 }
             );
-
-            if (!isPendingCart)
-            {
-                return false;
-            }
-
-            CartService service = new(_dbContext);
-            ICart cart = await service.ValidateCart((PendingCart)searchedCart);
-            bool succeded = false;
-            cart.Match(
-                    whenEmptyCart: @event =>
-                    {
-                        succeded = false;
-                        return @event;
-                    },
-                    whenPendingCart: @event =>
-                    {
-                        succeded = false;
-                        return @event;
-                    },
-                    whenValidatedCart: @event =>
-                    {
-                        succeded = true;
-                        return @event;
-                    },
-                    whenCalculatedCart: @event =>
-                    {
-                        succeded = false;
-                        return @event;
-                    },
-                    whenPaidCart: @event =>
-                    {
-                        succeded = false;
-                        return @event;
-                    }
-                );
-
-            if (succeded)
-            {
-                await CartsRepository.ChangeCartState(accountID, cart);
-            }
 
             return succeded;
         }
