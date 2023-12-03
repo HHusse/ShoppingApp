@@ -26,7 +26,7 @@ namespace ShoppingApp.Data.Repositories
 
         public async Task RemoveQuantity(string productCode, int quantity)
         {
-            ProductDTO productDTO = await _dbContext.Products.FirstOrDefaultAsync(product => product.Uid == productCode);
+            var productDTO = _dbContext.Products.Find(productCode);
             if (productDTO is not null)
             {
                 productDTO.Quantity = productDTO.Quantity - quantity;

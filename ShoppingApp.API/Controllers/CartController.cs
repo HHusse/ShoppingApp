@@ -49,7 +49,7 @@ namespace ShoppingApp.API.Controllers
 
             RemoveProductWorkflow workflow = new(_dbContext);
             bool succeded = await workflow.Execute(accountID, productCode);
-            return succeded ? StatusCode(201) : StatusCode(403);
+            return succeded ? StatusCode(200) : StatusCode(403);
 
         }
 
@@ -67,7 +67,7 @@ namespace ShoppingApp.API.Controllers
 
             PayCartWorkflow workflow = new(_dbContext);
             bool succeded = await workflow.Execute(accountID);
-            return succeded ? StatusCode(201) : StatusCode(403);
+            return succeded ? StatusCode(200) : StatusCode(403);
 
         }
 
@@ -85,7 +85,7 @@ namespace ShoppingApp.API.Controllers
 
             ValidateCartWorkflow workflow = new(_dbContext);
             bool succeded = await workflow.Execute(accountID);
-            return succeded ? StatusCode(201) : StatusCode(403);
+            return succeded ? StatusCode(200) : StatusCode(403);
 
         }
 
@@ -103,7 +103,7 @@ namespace ShoppingApp.API.Controllers
 
             CalculateCartWorkflow workflow = new(_dbContext);
             bool succeded = await workflow.Execute(accountID);
-            return succeded ? StatusCode(201) : StatusCode(403);
+            return succeded ? StatusCode(200) : StatusCode(403);
 
         }
 
@@ -121,7 +121,7 @@ namespace ShoppingApp.API.Controllers
 
             PlaceOrderWorkflow workflow = new(_dbContext);
             bool succeded = await workflow.Execute(accountID);
-            return succeded ? StatusCode(201) : StatusCode(403);
+            return succeded ? StatusCode(200) : StatusCode(403);
 
         }
     }

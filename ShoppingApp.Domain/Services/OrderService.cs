@@ -41,8 +41,8 @@ namespace ShoppingApp.Domain.Services
             string headerUid = await orderHeaderRepository.CreateNewOrderHeader(accountID, paidCart.data.ToString(), paidCart.finalPrice);
             foreach (var product in paidCart.products)
             {
-                await orderLineRepository.AddProductLine(product.Quantity, product.Price, headerUid, product.Uid);
                 await productRepository.RemoveQuantity(product.Uid, product.Quantity);
+                await orderLineRepository.AddProductLine(product.Quantity, product.Price, headerUid, product.Uid);
             }
 
         }
