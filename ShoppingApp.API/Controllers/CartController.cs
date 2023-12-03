@@ -21,22 +21,18 @@ namespace ShoppingApp.API.Controllers
         [Authorize]
         public async Task<IActionResult> AddProductroduct(string productCode)
         {
-            if (HttpContext.Request.Headers.TryGetValue("Authorization", out var authHeaderValue))
-            {
+            var authorizationHeader = Request.Headers.Authorization;
+            string token = authorizationHeader.ToString().Replace("Bearer ", "");
+            var result = TokenService.ExtractAccountID(token);
+            string accountID = result.Match(
+                    some => some,
+                    () => ""
+                );
 
-                string token = authHeaderValue.ToString().Replace("Bearer ", "");
-                var result = TokenService.ExtractAccountID(token);
-                string accountID = result.Match(
-                        some => some,
-                        () => ""
-                    );
+            AddProductsWorkflow workflow = new(_dbContext);
+            bool succeded = await workflow.Execute(accountID, productCode);
+            return succeded ? StatusCode(201) : StatusCode(403);
 
-                AddProductsWorkflow workflow = new(_dbContext);
-                bool succeded = await workflow.Execute(accountID, productCode);
-                return succeded ? StatusCode(201) : StatusCode(403);
-            }
-
-            return StatusCode(404);
         }
     }
 }
