@@ -15,46 +15,45 @@ namespace ShoppingApp.Domain.Workflows
             _dbContext = dbContext;
         }
 
-        public async Task<bool> Execute(string accountID)
+        public async Task<int> Execute(string accountID)
         {
             CartService service = new(_dbContext);
             ICart searchedCart = await CartsRepository.GetCart(accountID);
 
-            bool succeded = false;
+            int result = 500;
             searchedCart.Match(
                 whenEmptyCart: @event =>
                 {
-                    succeded = false;
+                    result = 403;
                     return @event;
                 },
                 whenPendingCart: @event =>
                 {
-                    succeded = false;
+                    result = 403;
                     return @event;
                 },
                 whenValidatedCart: validatedCart =>
                 {
-                    succeded = true;
-                    Task.Run(async () =>
+                    CalculatedCart newCart = (CalculatedCart)service.CalculateCart(validatedCart).Result;
+                    if (CartsRepository.ChangeCartState(accountID, newCart).Result)
                     {
-                        CalculatedCart newCart = (CalculatedCart)await service.CalculateCart(validatedCart);
-                        succeded = await CartsRepository.ChangeCartState(accountID, newCart);
-                    });
+                        result = 200;
+                    }
                     return validatedCart;
                 },
                 whenCalculatedCart: @event =>
                 {
-                    succeded = false;
+                    result = 403;
                     return @event;
                 },
                 whenPaidCart: @event =>
                 {
-                    succeded = false;
+                    result = 403;
                     return @event;
                 }
             );
 
-            return succeded;
+            return result;
         }
     }
 }

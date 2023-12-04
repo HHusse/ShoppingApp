@@ -16,16 +16,16 @@ namespace ShoppingApp.Domain.Workflows
             _dbContext = dbContext;
         }
 
-        public async Task<bool> Execute(string accountID)
+        public async Task<int> Execute(string accountID)
         {
             CartService service = new(_dbContext);
             ICart searchedCart = await CartsRepository.GetCart(accountID);
 
-            bool succeded = false;
+            int result = 500;
             searchedCart.Match(
                 whenEmptyCart: @event =>
                 {
-                    succeded = false;
+                    result = 403;
                     return @event;
                 },
                 whenPendingCart: pendingCart =>
@@ -33,29 +33,36 @@ namespace ShoppingApp.Domain.Workflows
                     ICart cart = service.ValidateCart(pendingCart).Result;
                     if (cart is ValidatedCart)
                     {
-                        succeded = CartsRepository.ChangeCartState(accountID, cart).Result;
+                        if (CartsRepository.ChangeCartState(accountID, cart).Result)
+                        {
+                            result = 200;
+                        }
+                    }
+                    else
+                    {
+                        result = 400;
                     }
 
                     return pendingCart;
                 },
                 whenValidatedCart: @event =>
                 {
-                    succeded = false;
+                    result = 403;
                     return @event;
                 },
                 whenCalculatedCart: @event =>
                 {
-                    succeded = false;
+                    result = 403;
                     return @event;
                 },
                 whenPaidCart: @event =>
                 {
-                    succeded = false;
+                    result = 403;
                     return @event;
                 }
             );
 
-            return succeded;
+            return result;
         }
 
     }

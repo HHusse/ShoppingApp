@@ -14,21 +14,21 @@ namespace ShoppingApp.Domain.Workflows
             _dbContext = dbContext;
         }
 
-        public async Task<bool> Execute(string accountID, string productCode)
+        public async Task<int> Execute(string accountID, string productCode)
         {
             CartService service = new(_dbContext);
             ICart searchedCart = await CartsRepository.GetCart(accountID);
 
-            bool succeded = false;
+            int result = 500;
             searchedCart.Match(
                 whenEmptyCart: @event =>
                 {
-                    succeded = false;
+                    result = 403;
                     return @event;
                 },
                 whenPendingCart: pendingCart =>
                 {
-                    succeded = true;
+                    result = 200;
                     Task.Run(async () =>
                     {
                         await service.RemoveProductFromCart(pendingCart, productCode);
@@ -39,22 +39,22 @@ namespace ShoppingApp.Domain.Workflows
                 },
                 whenValidatedCart: @event =>
                 {
-                    succeded = false;
+                    result = 403;
                     return @event;
                 },
                 whenCalculatedCart: @event =>
                 {
-                    succeded = false;
+                    result = 403;
                     return @event;
                 },
                 whenPaidCart: @event =>
                 {
-                    succeded = false;
+                    result = 403;
                     return @event;
                 }
             );
 
-            return succeded;
+            return result;
         }
     }
 }
