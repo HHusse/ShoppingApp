@@ -21,14 +21,9 @@ namespace ShoppingApp.API.Controllers
         {
             Account newAccount = new Account(lastName, firstName, email.ToLower(), password);
             RegisterWorkflow workflow = new(_dbContext);
-            bool succeded = await workflow.Execute(newAccount);
+            int res = await workflow.Execute(newAccount);
 
-            if (!succeded)
-            {
-                return StatusCode(500);
-            }
-
-            return StatusCode(200);
+            return StatusCode(res);
         }
 
         [HttpPost("login")]
