@@ -14,7 +14,7 @@ namespace ShoppingApp.Domain.Services
         public static string CreateToken(Account account)
         {
             List<Claim> claims = new List<Claim> {
-                new Claim(ClaimTypes.NameIdentifier, account.Uid.ToString())
+                new Claim("ID", account.Uid.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRETKEY")!));
@@ -39,7 +39,7 @@ namespace ShoppingApp.Domain.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwtToken = tokenHandler.ReadJwtToken(token);
 
-            Claim? accountID = jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
+            Claim? accountID = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "ID");
 
             if (accountID != null)
             {
