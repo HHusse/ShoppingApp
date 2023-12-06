@@ -32,7 +32,11 @@ namespace ShoppingApp.Domain.Workflows
                     whenPendingCart: pendingCart =>
                     {
                         res.State = "pending";
-                        res.Cart = new { pendingCart.products };
+                        var groupedProducts = pendingCart.products
+                            .GroupBy(p => p)
+                            .Select(group => new { id = group.Key, quantity = group.Count() });
+
+                        res.Cart = new { products = groupedProducts };
 
                         return pendingCart;
                     },

@@ -33,27 +33,64 @@ namespace ShoppingApp.Domain.Workflows
                 {
                     response.Success = true;
                     response.StatusCode = 200;
-                    Task.Run(async () =>
+                    Task task = Task.Run(async () =>
                     {
                         await service.RemoveProductFromCart(pendingCart, productCode);
-                        await CartsRepository.ChangeCartState(accountID, pendingCart);
+                        if (await CartsRepository.ChangeCartState(accountID, pendingCart))
+                        {
+                            response.Success = true;
+                            response.StatusCode = 201;
+                        }
                     });
+                    task.Wait();
 
                     return pendingCart;
                 },
-                whenValidatedCart: @event =>
+                whenValidatedCart: validatedCart =>
                 {
-                    response.Success = false;
-                    response.Message = "Is an validated cart";
-                    response.StatusCode = 403;
-                    return @event;
+                    Task task = Task.Run(async () =>
+                    {
+
+                        PendingCart pendingCart = new();
+                        var productsToAdd = validatedCart.products.SelectMany(product =>
+                        {
+                            return Enumerable.Repeat(product.Uid, product.Quantity);
+                        });
+
+                        pendingCart.products.AddRange(productsToAdd);
+                        await service.RemoveProductFromCart(pendingCart, productCode);
+                        if (await CartsRepository.ChangeCartState(accountID, pendingCart))
+                        {
+                            response.Success = true;
+                            response.StatusCode = 201;
+                        }
+                    });
+                    task.Wait();
+
+                    return validatedCart;
                 },
-                whenCalculatedCart: @event =>
+                whenCalculatedCart: calculatedCart =>
                 {
-                    response.Success = false;
-                    response.Message = "Is an calculated cart";
-                    response.StatusCode = 403;
-                    return @event;
+                    Task task = Task.Run(async () =>
+                    {
+
+                        PendingCart pendingCart = new();
+                        var productsToAdd = calculatedCart.products.SelectMany(product =>
+                        {
+                            return Enumerable.Repeat(product.Uid, product.Quantity);
+                        });
+
+                        pendingCart.products.AddRange(productsToAdd);
+                        await service.RemoveProductFromCart(pendingCart, productCode);
+                        if (await CartsRepository.ChangeCartState(accountID, pendingCart))
+                        {
+                            response.Success = true;
+                            response.StatusCode = 201;
+                        }
+                    });
+                    task.Wait();
+
+                    return calculatedCart;
                 },
                 whenPaidCart: @event =>
                 {

@@ -52,19 +52,51 @@ namespace ShoppingApp.Domain.Workflows
 
                     return pendingCart;
                 },
-                whenValidatedCart: @event =>
+                whenValidatedCart: validatedCart =>
                 {
-                    response.Success = false;
-                    response.Message = "Is an validated cart";
-                    response.StatusCode = 403;
-                    return @event;
+                    Task task = Task.Run(async () =>
+                    {
+                        
+                        PendingCart pendingCart = new();
+                        var productsToAdd = validatedCart.products.SelectMany(product =>
+                        {
+                            return Enumerable.Repeat(product.Uid, product.Quantity);
+                        });
+
+                        pendingCart.products.AddRange(productsToAdd);
+                        await service.AddProductToCart(pendingCart, productCode);
+                        if (await CartsRepository.ChangeCartState(accountID, pendingCart))
+                        {
+                            response.Success = true;
+                            response.StatusCode = 201;
+                        }
+                    });
+                    task.Wait();
+
+                    return validatedCart;
                 },
-                whenCalculatedCart: @event =>
+                whenCalculatedCart: calculatedCart =>
                 {
-                    response.Success = false;
-                    response.Message = "Is an calculated cart";
-                    response.StatusCode = 403;
-                    return @event;
+                    Task task = Task.Run(async () =>
+                    {
+
+                        PendingCart pendingCart = new();
+                        var productsToAdd = calculatedCart.products.SelectMany(product =>
+                        {
+                            return Enumerable.Repeat(product.Uid, product.Quantity);
+                        });
+
+                        pendingCart.products.AddRange(productsToAdd);
+                        await service.AddProductToCart(pendingCart, productCode);
+                        if (await CartsRepository.ChangeCartState(accountID, pendingCart))
+                        {
+                            response.Success = true;
+                            response.StatusCode = 201;
+                        }
+                    });
+                    task.Wait();
+
+                    return calculatedCart;
                 },
                 whenPaidCart: @event =>
                 {
