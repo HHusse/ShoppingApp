@@ -2,8 +2,11 @@
 using Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ShoppingApp.Domain;
+using ShoppingApp.Domain.ResponseModels;
 using ShoppingApp.Domain.Services;
 using ShoppingApp.Domain.Workflows;
+using static ShoppingApp.Domain.Models.Cart;
 
 namespace ShoppingApp.API.Controllers
 {
@@ -121,6 +124,25 @@ namespace ShoppingApp.API.Controllers
             PlaceOrderWorkflow workflow = new(_dbContext);
             int res = await workflow.Execute(accountID);
             return StatusCode(res);
+
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetCart()
+        {
+            var authorizationHeader = Request.Headers.Authorization;
+            string token = authorizationHeader.ToString().Replace("Bearer ", "");
+            var result = TokenService.ExtractAccountID(token);
+            string accountID = result.Match(
+                    some => some,
+                    () => ""
+                );
+
+            GetCartWorkflow workflow = new(_dbContext);
+            CartResponse res = await workflow.Execute(accountID);            
+
+            return StatusCode(200, res);
 
         }
     }

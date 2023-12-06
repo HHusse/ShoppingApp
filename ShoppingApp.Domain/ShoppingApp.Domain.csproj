@@ -11,9 +11,11 @@
     <None Remove="Workflows\" />
     <None Remove="Services\" />
     <None Remove="Mappers\" />
+    <None Remove="ResponseModels\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="ResponseModels\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CSharp.Choices" Version="2.1.1" />
