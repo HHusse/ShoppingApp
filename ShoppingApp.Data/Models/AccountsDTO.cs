@@ -11,6 +11,9 @@ namespace ShoppingApp.Data.Models
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        [Column(TypeName = "TEXT")]
+        public string Address { get; set; }
         [Column(TypeName = "TEXT")]
         public string Password { get; set; }
 

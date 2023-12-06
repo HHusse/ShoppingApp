@@ -51,7 +51,7 @@ namespace ShoppingApp.Domain.Workflows
                 whenCalculatedCart: @event =>
                 {
                     response.Success = false;
-                    response.Message = "Is a calculated cart";
+                    response.Message = "The cart must be paid";
                     response.StatusCode = 402;
                     return @event;
                 },
@@ -67,6 +67,7 @@ namespace ShoppingApp.Domain.Workflows
                         }
                     });
                     task.Wait();
+
                     return paidCart;
                 }
             );

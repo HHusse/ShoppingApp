@@ -21,17 +21,27 @@ namespace ShoppingApp.Domain.Workflows
         {
             newAccount.Password = BCrypt.Net.BCrypt.HashPassword(newAccount.Password);
             GeneralWorkflowResponse response = new();
-            Regex rgx = new("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
-            if (!rgx.IsMatch(newAccount.Email))
+            Regex emailRgx = new("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
+            Regex phoneNumberRgx = new("^[\\+]?[(]?[0-9]{3}[)]?[-\\s\\.]?[0-9]{3}[-\\s\\.]?[0-9]{4,6}$");
+
+            if (!emailRgx.IsMatch(newAccount.Email!))
             {
                 response.Success = false;
                 response.Message = "Invalid email";
                 response.StatusCode = 400;
                 return response;
             }
+            if (!phoneNumberRgx.IsMatch(newAccount.PhoneNumber!))
+            {
+                response.Success = false;
+                response.Message = "Invalid phone number";
+                response.StatusCode = 400;
+                return response;
+            }
+
             AccountService service = new(newAccount, _dbContext);
             bool succeded = service.RegisterAccount().Result;
-            if(succeded)
+            if (succeded)
             {
                 response.Success = true;
                 response.StatusCode = 200;

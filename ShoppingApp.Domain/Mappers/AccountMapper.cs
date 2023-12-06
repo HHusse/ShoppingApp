@@ -15,6 +15,8 @@ namespace ShoppingApp.Domain.Mappers
                 accountDTO.LastName,
                 accountDTO.FirstName,
                 accountDTO.Email,
+                accountDTO.PhoneNumber,
+                accountDTO.Address,
                 accountDTO.Password
             );
         }
@@ -30,6 +32,8 @@ namespace ShoppingApp.Domain.Mappers
                 LastName = account.LastName,
                 FirstName = account.FirstName,
                 Email = account.Email,
+                PhoneNumber = account.PhoneNumber,
+                Address = account.Address,
                 Password = account.Password,
                 OrderHeaders = new List<OrderHeaderDTO>()
             };

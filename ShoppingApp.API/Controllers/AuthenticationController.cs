@@ -18,9 +18,9 @@ namespace ShoppingApp.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(string lastName, string firstName, string email, string password)
+        public async Task<IActionResult> Register(string lastName, string firstName, string email, string phoneNumber, string address, string password)
         {
-            Account newAccount = new Account(lastName, firstName, email.ToLower(), password);
+            Account newAccount = new Account(lastName, firstName, email.ToLower(), phoneNumber, address, password);
             RegisterWorkflow workflow = new(_dbContext);
             GeneralWorkflowResponse res = await workflow.Execute(newAccount);
 
