@@ -32,28 +32,28 @@ namespace ShoppingApp.Domain.Workflows
                     whenPendingCart: pendingCart =>
                     {
                         res.State = "pending";
-                        res.Cart = new { Products = pendingCart.products };
+                        res.Cart = new { pendingCart.products };
 
                         return pendingCart;
                     },
                     whenValidatedCart: validatedCart =>
                     {
                         res.State = "validated";
-                        res.Cart = new { Products = validatedCart.products };
+                        res.Cart = new { validatedCart.products };
 
                         return validatedCart;
                     },
                     whenCalculatedCart: calculatedCart =>
                     {
                         res.State = "calculated";
-                        res.Cart = new { Products = calculatedCart.products, Price = calculatedCart.price };
+                        res.Cart = new { calculatedCart.products, calculatedCart.price };
 
                         return calculatedCart;
                     },
                     whenPaidCart: paidCart =>
                     {
                         res.State = "paid";
-                        res.Cart = new { Products = paidCart.products, Price = paidCart.finalPrice, Date = paidCart.data };
+                        res.Cart = new { paidCart.products, paidCart.finalPrice, paidCart.data };
 
                         return paidCart;
                     }

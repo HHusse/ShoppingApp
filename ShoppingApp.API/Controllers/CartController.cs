@@ -33,8 +33,8 @@ namespace ShoppingApp.API.Controllers
                 );
 
             AddProductsWorkflow workflow = new(_dbContext);
-            int res = await workflow.Execute(accountID, productCode);
-            return StatusCode(res);
+            GeneralWorkflowResponse res = await workflow.Execute(accountID, productCode);
+            return res.Success ? StatusCode(res.StatusCode) : StatusCode(res.StatusCode, new { message = res.Message });
         }
 
         [HttpDelete("product")]
@@ -50,8 +50,8 @@ namespace ShoppingApp.API.Controllers
                 );
 
             RemoveProductWorkflow workflow = new(_dbContext);
-            int res = await workflow.Execute(accountID, productCode);
-            return StatusCode(res);
+            GeneralWorkflowResponse res = await workflow.Execute(accountID, productCode);
+            return res.Success ? StatusCode(res.StatusCode) : StatusCode(res.StatusCode, new { message = res.Message });
 
         }
 
@@ -68,8 +68,8 @@ namespace ShoppingApp.API.Controllers
                 );
 
             PayCartWorkflow workflow = new(_dbContext);
-            int res = await workflow.Execute(accountID);
-            return StatusCode(res);
+            GeneralWorkflowResponse res = await workflow.Execute(accountID);
+            return res.Success ? StatusCode(res.StatusCode) : StatusCode(res.StatusCode, new { message = res.Message });
 
         }
 
@@ -86,8 +86,8 @@ namespace ShoppingApp.API.Controllers
                 );
 
             ValidateCartWorkflow workflow = new(_dbContext);
-            int res = await workflow.Execute(accountID);
-            return StatusCode(res);
+            GeneralWorkflowResponse res = await workflow.Execute(accountID);
+            return res.Success ? StatusCode(res.StatusCode) : StatusCode(res.StatusCode, new { message = res.Message });
 
         }
 
@@ -104,8 +104,8 @@ namespace ShoppingApp.API.Controllers
                 );
 
             CalculateCartWorkflow workflow = new(_dbContext);
-            int res = await workflow.Execute(accountID);
-            return StatusCode(res);
+            GeneralWorkflowResponse res = await workflow.Execute(accountID);
+            return res.Success ? StatusCode(res.StatusCode) : StatusCode(res.StatusCode, new { message = res.Message });
 
         }
 
@@ -122,8 +122,8 @@ namespace ShoppingApp.API.Controllers
                 );
 
             PlaceOrderWorkflow workflow = new(_dbContext);
-            int res = await workflow.Execute(accountID);
-            return StatusCode(res);
+            GeneralWorkflowResponse res = await workflow.Execute(accountID);
+            return res.Success ? StatusCode(res.StatusCode) : StatusCode(res.StatusCode, new { message = res.Message });
 
         }
 

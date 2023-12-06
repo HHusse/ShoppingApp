@@ -16,7 +16,7 @@ namespace ShoppingApp.Domain.Workflows
             _dbContext = dbContext;
         }
 
-        public async Task<Option<string>> Execute(string? email, string? password)
+        public async Task<Option<string>> Execute(string email, string password)
         {
             AccountService service = new(_dbContext);
             Account account = await service.GetAccount(email);

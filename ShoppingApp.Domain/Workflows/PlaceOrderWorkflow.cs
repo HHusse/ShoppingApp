@@ -1,4 +1,6 @@
-﻿using Data;
+﻿using Azure;
+using Data;
+using ShoppingApp.Domain.ResponseModels;
 using ShoppingApp.Domain.Services;
 using System;
 using System.Collections.Generic;
@@ -18,31 +20,39 @@ namespace ShoppingApp.Domain.Workflows
             _dbContext = dbContext;
         }
 
-        public async Task<int> Execute(string accountID)
+        public async Task<GeneralWorkflowResponse> Execute(string accountID)
         {
             ICart searchedCart = await CartsRepository.GetCart(accountID);
             OrderService service = new(_dbContext);
 
-            int result = 500;
+            GeneralWorkflowResponse response = new();
             searchedCart.Match(
                 whenEmptyCart: @event =>
                 {
-                    result = 403;
+                    response.Success = false;
+                    response.Message = "Is an empty cart";
+                    response.StatusCode = 403;
                     return @event;
                 },
                 whenPendingCart: @event =>
                 {
-                    result = 403;
+                    response.Success = false;
+                    response.Message = "Is a pending cart";
+                    response.StatusCode = 403;
                     return @event;
                 },
                 whenValidatedCart: @event =>
                 {
-                    result = 403;
+                    response.Success = false;
+                    response.Message = "Is a validated cart";
+                    response.StatusCode = 403;
                     return @event;
                 },
                 whenCalculatedCart: @event =>
                 {
-                    result = 402;
+                    response.Success = false;
+                    response.Message = "Is a calculated cart";
+                    response.StatusCode = 402;
                     return @event;
                 },
                 whenPaidCart: paidCart =>
@@ -52,7 +62,8 @@ namespace ShoppingApp.Domain.Workflows
                         await service.PlaceOrder(accountID, paidCart);
                         if (await CartsRepository.RemoveCart(accountID))
                         {
-                            result = 200;
+                            response.Success = true;
+                            response.StatusCode = 200;
                         }
                     });
                     task.Wait();
@@ -60,7 +71,7 @@ namespace ShoppingApp.Domain.Workflows
                 }
             );
 
-            return result;
+            return response;
 
         }
 

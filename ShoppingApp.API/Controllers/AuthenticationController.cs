@@ -2,6 +2,7 @@
 using Data;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Domain.Models;
+using ShoppingApp.Domain.ResponseModels;
 using ShoppingApp.Domain.Workflows;
 
 namespace ShoppingApp.API.Controllers
@@ -21,9 +22,9 @@ namespace ShoppingApp.API.Controllers
         {
             Account newAccount = new Account(lastName, firstName, email.ToLower(), password);
             RegisterWorkflow workflow = new(_dbContext);
-            int res = await workflow.Execute(newAccount);
+            GeneralWorkflowResponse res = await workflow.Execute(newAccount);
 
-            return StatusCode(res);
+            return res.Success ? StatusCode(res.StatusCode) : StatusCode(res.StatusCode, new { message = res.Message });
         }
 
         [HttpPost("login")]

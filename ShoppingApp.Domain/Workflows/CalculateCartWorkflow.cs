@@ -1,6 +1,7 @@
 ﻿using System;
 using Data;
 using ShoppingApp.Domain.Models;
+using ShoppingApp.Domain.ResponseModels;
 using ShoppingApp.Domain.Services;
 using static ShoppingApp.Domain.Models.Cart;
 
@@ -15,21 +16,25 @@ namespace ShoppingApp.Domain.Workflows
             _dbContext = dbContext;
         }
 
-        public async Task<int> Execute(string accountID)
+        public async Task<GeneralWorkflowResponse> Execute(string accountID)
         {
             CartService service = new(_dbContext);
             ICart searchedCart = await CartsRepository.GetCart(accountID);
 
-            int result = 500;
+            GeneralWorkflowResponse response = new();
             searchedCart.Match(
                 whenEmptyCart: @event =>
                 {
-                    result = 403;
+                    response.Success = false;
+                    response.Message = "Is an empty cart";
+                    response.StatusCode = 403;
                     return @event;
                 },
                 whenPendingCart: @event =>
                 {
-                    result = 403;
+                    response.Success = false;
+                    response.Message = "Is an pending cart";
+                    response.StatusCode = 403;
                     return @event;
                 },
                 whenValidatedCart: validatedCart =>
@@ -37,23 +42,28 @@ namespace ShoppingApp.Domain.Workflows
                     CalculatedCart newCart = (CalculatedCart)service.CalculateCart(validatedCart).Result;
                     if (CartsRepository.ChangeCartState(accountID, newCart).Result)
                     {
-                        result = 200;
+                        response.Success = true;
+                        response.StatusCode = 200;
                     }
                     return validatedCart;
                 },
                 whenCalculatedCart: @event =>
                 {
-                    result = 403;
+                    response.Success = false;
+                    response.Message = "Is an calculated cart";
+                    response.StatusCode = 403;
                     return @event;
                 },
                 whenPaidCart: @event =>
                 {
-                    result = 403;
+                    response.Success = false;
+                    response.Message = "Is an paid cart";
+                    response.StatusCode = 403;
                     return @event;
                 }
             );
 
-            return result;
+            return response;
         }
     }
 }

@@ -2,6 +2,7 @@
 using Data;
 using LanguageExt;
 using ShoppingApp.Domain.Models;
+using ShoppingApp.Domain.ResponseModels;
 using ShoppingApp.Domain.Services;
 using static ShoppingApp.Domain.Models.Cart;
 
@@ -16,16 +17,18 @@ namespace ShoppingApp.Domain.Workflows
             _dbContext = dbContext;
         }
 
-        public async Task<int> Execute(string accountID)
+        public async Task<GeneralWorkflowResponse> Execute(string accountID)
         {
             CartService service = new(_dbContext);
             ICart searchedCart = await CartsRepository.GetCart(accountID);
 
-            int result = 500;
+            GeneralWorkflowResponse response = new();
             searchedCart.Match(
                 whenEmptyCart: @event =>
                 {
-                    result = 403;
+                    response.Success = false;
+                    response.Message = "Is an empty cart";
+                    response.StatusCode = 403;
                     return @event;
                 },
                 whenPendingCart: pendingCart =>
@@ -35,34 +38,43 @@ namespace ShoppingApp.Domain.Workflows
                     {
                         if (CartsRepository.ChangeCartState(accountID, cart).Result)
                         {
-                            result = 200;
+                            response.Success = true;
+                            response.StatusCode = 200;
                         }
                     }
                     else
                     {
-                        result = 400;
+                        response.Success = false;
+                        response.Message = "Invalid product in cart";
+                        response.StatusCode = 400;
                     }
 
                     return pendingCart;
                 },
                 whenValidatedCart: @event =>
                 {
-                    result = 403;
+                    response.Success = false;
+                    response.Message = "Is an empty cart";
+                    response.StatusCode = 403;
                     return @event;
                 },
                 whenCalculatedCart: @event =>
                 {
-                    result = 403;
+                    response.Success = false;
+                    response.Message = "Is an empty cart";
+                    response.StatusCode = 403;
                     return @event;
                 },
                 whenPaidCart: @event =>
                 {
-                    result = 403;
+                    response.Success = false;
+                    response.Message = "Is an empty cart";
+                    response.StatusCode = 403;
                     return @event;
                 }
             );
 
-            return result;
+            return response;
         }
 
     }
