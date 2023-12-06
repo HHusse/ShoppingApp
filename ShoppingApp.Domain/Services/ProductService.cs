@@ -33,5 +33,10 @@ namespace ShoppingApp.Domain.Services
         {
             return await productRepository.VerifyQunatity(productCode, quantity);
         }
+
+        public async Task<int> GetQuantity(string productCode)
+        {
+            return await productRepository.GetQuantity(productCode);
+        }
     }
 }

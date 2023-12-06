@@ -43,5 +43,11 @@ namespace ShoppingApp.Data.Repositories
             }
             return true;
         }
+
+        public async Task<int> GetQuantity(string productCode)
+        {
+            ProductDTO productDTO = await _dbContext.Products.FirstOrDefaultAsync(product => product.Uid == productCode);
+            return productDTO.Quantity;
+        }
     }
 }

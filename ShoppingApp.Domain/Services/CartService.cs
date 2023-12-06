@@ -55,15 +55,12 @@ namespace ShoppingApp.Domain.Services
 
                 var validatedProduct = await productService.ValidateProduct(product);
 
-                Product newProduct = validatedProduct.Match(
-                        some => some,
-                        () => null
-                    );
-
-                if (newProduct == null)
+                Product newProduct = validatedProduct.IfNone(() => new Product());
+                if (String.IsNullOrEmpty(newProduct.Uid))
                 {
                     return pendingCart;
                 }
+
                 newProduct.Quantity = 1;
                 products.Add(newProduct);
 
@@ -95,6 +92,69 @@ namespace ShoppingApp.Domain.Services
             DateTime date = DateTime.Now;
             PaidCart paidCart = new(calculatedCart.products, calculatedCart.price, date);
             return paidCart;
+        }
+
+        public async Task<PendingCart> CleanUpCart(PendingCart pendingCart)
+        {
+            if (pendingCart.products.Count == 0)
+            {
+                return pendingCart;
+            }
+
+            Dictionary<string, int> products = new();
+            List<string> productsToRemove = new();
+            foreach (var product in pendingCart.products)
+            {
+                if (products.Keys.Exists(p => p == product))
+                {
+                    products[product] += 1;
+                    continue;
+                }
+
+                var validatedProduct = await productService.ValidateProduct(product);
+
+                Product validProduct = validatedProduct.IfNone(() => new Product());
+                if (String.IsNullOrEmpty(validProduct.Uid))
+                {
+                    productsToRemove.Add(product);
+                    continue;
+                }
+
+                validProduct.Quantity = 1;
+                products.Add(validProduct.Uid, validProduct.Quantity);
+            }
+
+            foreach (var productToRemove in productsToRemove)
+            {
+                pendingCart.products.Remove(productToRemove);
+            }
+
+            foreach (var product in products)
+            {
+                int quantity = await productService.GetQuantity(product.Key);
+                if (quantity == 0)
+                {
+                    pendingCart.products.RemoveAll(p => p == product.Key);
+                    continue;
+                }
+
+                if (quantity < product.Value)
+                {
+                    int quantityToRemove = product.Value - quantity;
+
+                    var productToRemove = pendingCart.products.FirstOrDefault(p => p == product.Key);
+
+                    if (productToRemove != null)
+                    {
+                        for (int count = 0; count < quantityToRemove; count++)
+                        {
+                            pendingCart.products.Remove(productToRemove);
+                        }
+                    }
+                }
+            }
+
+            return pendingCart;
         }
     }
 }

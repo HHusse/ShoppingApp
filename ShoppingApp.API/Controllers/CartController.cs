@@ -140,10 +140,27 @@ namespace ShoppingApp.API.Controllers
                 );
 
             GetCartWorkflow workflow = new(_dbContext);
-            CartResponse res = await workflow.Execute(accountID);            
+            CartResponse res = await workflow.Execute(accountID);
 
             return StatusCode(200, res);
+        }
 
+        [HttpDelete("cleanup")]
+        [Authorize]
+        public async Task<IActionResult> CleanUpCart()
+        {
+            var authorizationHeader = Request.Headers.Authorization;
+            string token = authorizationHeader.ToString().Replace("Bearer ", "");
+            var result = TokenService.ExtractAccountID(token);
+            string accountID = result.Match(
+                    some => some,
+                    () => ""
+                );
+
+            CleanUpCartWorkflow workflow = new(_dbContext);
+            GeneralWorkflowResponse res = await workflow.Execute(accountID);
+
+            return res.Success ? StatusCode(res.StatusCode) : StatusCode(res.StatusCode, new { message = res.Message });
         }
     }
 }

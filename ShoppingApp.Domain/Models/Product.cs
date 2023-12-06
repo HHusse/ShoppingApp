@@ -1,8 +1,19 @@
 ﻿using System;
+using System.Security.Cryptography;
+
 namespace ShoppingApp.Domain.Models
 {
     public class Product
     {
+        public Product()
+        {
+            Uid = "";
+            Name = "";
+            Description = "";
+            Quantity = -1;
+            Price = -1;
+        }
+
         public Product(string uid, string name, string description, int quantity, double price)
         {
             Uid = uid;
