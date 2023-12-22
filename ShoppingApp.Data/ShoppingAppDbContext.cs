@@ -11,13 +11,13 @@ namespace Data
         public ShoppingAppDbContext(DbContextOptions<ShoppingAppDbContext> options) : base(options)
         {
         }
-        public DbSet<ProductDTO> Products { get; set; }
+        public virtual DbSet<ProductDTO> Products { get; set; }
 
-        public DbSet<OrderHeaderDTO> OrderHeaders { get; set; }
+        public virtual DbSet<OrderHeaderDTO> OrderHeaders { get; set; }
 
-        public DbSet<OrderLineDTO> OrderLines { get; set; }
+        public virtual DbSet<OrderLineDTO> OrderLines { get; set; }
 
-        public DbSet<AccountDTO> Accounts { get; set; }
+        public virtual DbSet<AccountDTO> Accounts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
