@@ -17,7 +17,7 @@ namespace ShoppingApp.Data.Models
         [Column(TypeName = "TEXT")]
         public string Password { get; set; }
 
-        public required ICollection<OrderHeaderDTO> OrderHeaders { get; set; }
+        public ICollection<OrderHeaderDTO> OrderHeaders { get; set; }
     }
 }
 
