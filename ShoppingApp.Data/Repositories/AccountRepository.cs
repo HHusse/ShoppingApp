@@ -19,7 +19,7 @@ namespace ShoppingApp.Data.Repositories
         {
             await _dbContext.Accounts.AddAsync(newAccount);
             await _dbContext.SaveChangesAsync();
-            return true;
+            return await _dbContext.SaveChangesAsync() == 0 ? false : true;
         }
 
         public async Task<AccountDTO> GetAccountByEmail(string? email)

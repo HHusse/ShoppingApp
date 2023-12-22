@@ -32,13 +32,12 @@ namespace ShoppingApp.Domain.Services
         {
             try
             {
-                await accountRepository.CreateAccount(AccountMapper.MapToAccountDTO(Account!));
+                return await accountRepository.CreateAccount(AccountMapper.MapToAccountDTO(Account!));
             }
             catch (Exception)
             {
                 return false;
             }
-            return true;
         }
 
         public async Task<Account> GetAccount(string? email) => AccountMapper.MapToAccount(await accountRepository.GetAccountByEmail(email));
