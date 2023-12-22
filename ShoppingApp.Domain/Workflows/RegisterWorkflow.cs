@@ -21,7 +21,7 @@ namespace ShoppingApp.Domain.Workflows
         {
             newAccount.Password = BCrypt.Net.BCrypt.HashPassword(newAccount.Password);
             GeneralWorkflowResponse response = new();
-            Regex emailRgx = new("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
+            Regex emailRgx = new("^(?!.*[._]{2})[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
             Regex phoneNumberRgx = new("^[\\+]?[(]?[0-9]{3}[)]?[-\\s\\.]?[0-9]{3}[-\\s\\.]?[0-9]{4,6}$");
 
             if (!emailRgx.IsMatch(newAccount.Email!))
