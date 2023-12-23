@@ -5,7 +5,7 @@ using ShoppingApp.Data.Models;
 using ShoppingApp.Domain.ResponseModels;
 using ShoppingApp.Domain.Services;
 using ShoppingApp.Domain.Workflows;
-using static ShoppingApp.Test.Utils.AccountTestUtils;
+using static ShoppingApp.Test.Utils;
 using static ShoppingApp.Domain.CartsRepository;
 using static ShoppingApp.Domain.Models.Cart;
 using ShoppingApp.Domain.Models;
@@ -60,6 +60,7 @@ namespace ShoppingApp.Test.Workflows
 
             Assert.IsTrue(response.Success);
             Assert.That(carts.Count(), Is.EqualTo(1));
+            Assert.That(carts.First().Value, Is.TypeOf<PendingCart>());
         }
 
         [Test]
@@ -79,8 +80,8 @@ namespace ShoppingApp.Test.Workflows
 
             Assert.IsTrue(response.Success);
             Assert.That(carts.First().Value, Is.TypeOf<PendingCart>());
-            var cart = (PendingCart)carts.First().Value;
-            Assert.IsTrue(cart.products.Contains(productID));
+            var resultCart = (PendingCart)carts.First().Value;
+            Assert.IsTrue(resultCart.products.Contains(productID));
         }
 
         [Test]
@@ -100,8 +101,8 @@ namespace ShoppingApp.Test.Workflows
 
             Assert.IsTrue(response.Success);
             Assert.That(carts.First().Value, Is.TypeOf<PendingCart>());
-            var cart = (PendingCart)carts.First().Value;
-            Assert.IsTrue(cart.products.Contains(productID));
+            var resultCart = (PendingCart)carts.First().Value;
+            Assert.IsTrue(resultCart.products.Contains(productID));
         }
 
         [Test]
@@ -121,8 +122,8 @@ namespace ShoppingApp.Test.Workflows
 
             Assert.IsTrue(response.Success);
             Assert.That(carts.First().Value, Is.TypeOf<PendingCart>());
-            var cart = (PendingCart)carts.First().Value;
-            Assert.IsTrue(cart.products.Contains(productID));
+            var resultCart = (PendingCart)carts.First().Value;
+            Assert.IsTrue(resultCart.products.Contains(productID));
         }
 
         [Test]
@@ -142,12 +143,12 @@ namespace ShoppingApp.Test.Workflows
 
             Assert.IsTrue(response.Success);
             Assert.That(carts.First().Value, Is.TypeOf<PendingCart>());
-            var cart = (PendingCart)carts.First().Value;
-            Assert.IsTrue(cart.products.Contains(productID));
+            var resultCart = (PendingCart)carts.First().Value;
+            Assert.IsTrue(resultCart.products.Contains(productID));
         }
 
         [Test]
-        public void TryAddNewProductToPaidCart()
+        public void TryToAddNewProductToPaidCart()
         {
             PaidCart paidCart = new(new List<Product>(), 0, DateTime.Now);
             carts.TryAdd(accountTestId, paidCart);

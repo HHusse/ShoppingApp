@@ -1,9 +1,10 @@
 ﻿using System;
 using ShoppingApp.Data.Models;
+using ShoppingApp.Domain.Models;
 
-namespace ShoppingApp.Test.Utils
+namespace ShoppingApp.Test
 {
-    public static class AccountTestUtils
+    public static class Utils
     {
         public static void CreateFakeAccounts(ref List<AccountDTO> accounts)
         {
@@ -40,6 +41,15 @@ namespace ShoppingApp.Test.Utils
                 Password = BCrypt.Net.BCrypt.HashPassword("1234")
             });
         }
+
+        public static List<Product> CreateDefaultListOfThreeProducts() =>
+            new List<Product>()
+            {
+                new("1", "1", "1", 1, 1),
+                new("2", "2", "2", 1, 2),
+                new("3", "3", "3", 1, 3),
+            };
+
     }
 }
 

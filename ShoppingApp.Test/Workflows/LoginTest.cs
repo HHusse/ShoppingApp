@@ -4,7 +4,7 @@ using Moq;
 using Moq.EntityFrameworkCore;
 using ShoppingApp.Data.Models;
 using ShoppingApp.Domain.Workflows;
-using static ShoppingApp.Test.Utils.AccountTestUtils;
+using static ShoppingApp.Test.Utils;
 
 namespace ShoppingApp.Test.Workflows
 {
@@ -52,7 +52,7 @@ namespace ShoppingApp.Test.Workflows
         [TestCase("husse123@gmail.com", "12345")]
         [TestCase("user22@gmail.com", "12345")]
         [TestCase("user33@gmail.com", "12345")]
-        public void TryLoginUnregisteredUsers(string email, string password)
+        public void TryToLoginUnregisteredUsers(string email, string password)
         {
             LoginWorkflow workflow = new(mockDbContext.Object);
             Option<string> response = workflow.Execute(email, password).Result;
