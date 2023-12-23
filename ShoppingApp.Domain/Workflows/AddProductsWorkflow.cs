@@ -56,7 +56,7 @@ namespace ShoppingApp.Domain.Workflows
                 {
                     Task task = Task.Run(async () =>
                     {
-                        
+
                         PendingCart pendingCart = new();
                         var productsToAdd = validatedCart.products.SelectMany(product =>
                         {
@@ -101,7 +101,7 @@ namespace ShoppingApp.Domain.Workflows
                 whenPaidCart: @event =>
                 {
                     response.Success = false;
-                    response.Message = "Is an paid cart";
+                    response.Message = "Is a paid cart";
                     response.StatusCode = 403;
                     return @event;
                 }

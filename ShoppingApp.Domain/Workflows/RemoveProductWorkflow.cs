@@ -111,7 +111,7 @@ namespace ShoppingApp.Domain.Workflows
                 whenPaidCart: @event =>
                 {
                     response.Success = false;
-                    response.Message = "Is an paid cart";
+                    response.Message = "Is a paid cart";
                     response.StatusCode = 403;
                     return @event;
                 }
