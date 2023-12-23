@@ -36,6 +36,7 @@ namespace ShoppingApp.Domain.Workflows
                         if (!(await service.RemoveProductFromCart(pendingCart, productCode)))
                         {
                             response.Success = false;
+                            response.Message = "The product could not be deleted because it does not exist in the cart";
                             response.StatusCode = 400;
                             return;
                         }
@@ -64,6 +65,7 @@ namespace ShoppingApp.Domain.Workflows
                         if (!(await service.RemoveProductFromCart(pendingCart, productCode)))
                         {
                             response.Success = false;
+                            response.Message = "The product could not be deleted because it does not exist in the cart";
                             response.StatusCode = 400;
                             return;
                         }
@@ -92,6 +94,7 @@ namespace ShoppingApp.Domain.Workflows
                         if (!(await service.RemoveProductFromCart(pendingCart, productCode)))
                         {
                             response.Success = false;
+                            response.Message = "The product could not be deleted because it does not exist in the cart";
                             response.StatusCode = 400;
                             return;
                         }
