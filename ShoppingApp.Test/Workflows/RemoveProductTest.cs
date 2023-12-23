@@ -70,8 +70,8 @@ namespace ShoppingApp.Test.Workflows
 
             Assert.IsTrue(response.Success);
             Assert.That(carts.First().Value, Is.TypeOf<PendingCart>());
-            var cart = (PendingCart)carts.First().Value;
-            Assert.That(cart.products.Count(), Is.EqualTo(0));
+            var resultCart = (PendingCart)carts.First().Value;
+            Assert.That(resultCart.products.Count(), Is.EqualTo(0));
         }
 
         public static IEnumerable<TestCaseData> CartTestCases

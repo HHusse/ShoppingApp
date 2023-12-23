@@ -50,6 +50,41 @@ namespace ShoppingApp.Test
                 new("3", "3", "3", 1, 3),
             };
 
+        public static void CreateFakeProducts(ref List<ProductDTO> products)
+        {
+            products.Add(new ProductDTO
+            {
+                Uid = "1",
+                Name = "1",
+                Description = "1",
+                Quantity = 10,
+                Price = 10
+            });
+            products.Add(new ProductDTO
+            {
+                Uid = "2",
+                Name = "2",
+                Description = "2",
+                Quantity = 2,
+                Price = 2
+            });
+            products.Add(new ProductDTO
+            {
+                Uid = "3",
+                Name = "3",
+                Description = "3",
+                Quantity = 100,
+                Price = 30
+            });
+            products.Add(new ProductDTO
+            {
+                Uid = "4",
+                Name = "4",
+                Description = "4",
+                Quantity = 30,
+                Price = 40
+            });
+        }
     }
 }
 
