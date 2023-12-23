@@ -38,14 +38,14 @@ namespace ShoppingApp.Domain.Workflows
                 whenPendingCart: @event =>
                 {
                     response.Success = false;
-                    response.Message = "Is an pending cart";
+                    response.Message = "Is a pending cart";
                     response.StatusCode = 403;
                     return @event;
                 },
                 whenValidatedCart: @event =>
                 {
                     response.Success = false;
-                    response.Message = "Is an validated cart";
+                    response.Message = "Is a validated cart";
                     response.StatusCode = 403;
                     return @event;
                 },
@@ -65,7 +65,7 @@ namespace ShoppingApp.Domain.Workflows
                 whenPaidCart: @event =>
                 {
                     response.Success = false;
-                    response.Message = "Is an paid cart";
+                    response.Message = "Is a paid cart";
                     response.StatusCode = 403;
                     return @event;
                 }
