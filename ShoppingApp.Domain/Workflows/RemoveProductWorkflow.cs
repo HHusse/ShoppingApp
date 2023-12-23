@@ -33,7 +33,12 @@ namespace ShoppingApp.Domain.Workflows
                 {
                     Task task = Task.Run(async () =>
                     {
-                        await service.RemoveProductFromCart(pendingCart, productCode);
+                        if (!(await service.RemoveProductFromCart(pendingCart, productCode)))
+                        {
+                            response.Success = false;
+                            response.StatusCode = 400;
+                            return;
+                        }
                         if (await CartsRepository.ChangeCartState(accountID, pendingCart))
                         {
                             response.Success = true;
@@ -56,7 +61,12 @@ namespace ShoppingApp.Domain.Workflows
                         });
 
                         pendingCart.products.AddRange(productsToAdd);
-                        await service.RemoveProductFromCart(pendingCart, productCode);
+                        if (!(await service.RemoveProductFromCart(pendingCart, productCode)))
+                        {
+                            response.Success = false;
+                            response.StatusCode = 400;
+                            return;
+                        }
                         if (await CartsRepository.ChangeCartState(accountID, pendingCart))
                         {
                             response.Success = true;
@@ -79,7 +89,12 @@ namespace ShoppingApp.Domain.Workflows
                         });
 
                         pendingCart.products.AddRange(productsToAdd);
-                        await service.RemoveProductFromCart(pendingCart, productCode);
+                        if (!(await service.RemoveProductFromCart(pendingCart, productCode)))
+                        {
+                            response.Success = false;
+                            response.StatusCode = 400;
+                            return;
+                        }
                         if (await CartsRepository.ChangeCartState(accountID, pendingCart))
                         {
                             response.Success = true;
