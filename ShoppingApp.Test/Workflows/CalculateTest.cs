@@ -9,14 +9,14 @@ using static ShoppingApp.Domain.CartsRepository;
 using static ShoppingApp.Domain.Models.Cart;
 using Moq.EntityFrameworkCore;
 using ShoppingApp.Domain.ResponseModels;
+using ShoppingApp.Domain.Models;
 
 namespace ShoppingApp.Test.Workflows
 {
-    public class ValidateTest
+    public class CalculateTest
     {
         private Mock<ShoppingAppDbContext> mockDbContext;
         private List<AccountDTO> accounts;
-        private List<ProductDTO> products;
         private string accountTestId = "";
 
         [SetUp]
@@ -25,11 +25,8 @@ namespace ShoppingApp.Test.Workflows
             Environment.SetEnvironmentVariable("SECRETKEY", "HbZ3@e7M&K8#P$2sW5vY9zC*F1tA6gS ");
             accounts = new List<AccountDTO>();
             CreateFakeAccounts(ref accounts);
-            products = new List<ProductDTO>();
-            CreateFakeProducts(ref products);
             mockDbContext = new();
             mockDbContext.Setup(m => m.Accounts).ReturnsDbSet(accounts);
-            mockDbContext.Setup(m => m.Products).ReturnsDbSet(products);
 
             LoginWorkflow workflow = new(mockDbContext.Object);
             var result = workflow.Execute("husse@gmail.com", "1234").Result;
@@ -52,55 +49,29 @@ namespace ShoppingApp.Test.Workflows
         }
 
         [Test]
-        public void ValidatedPendingCart()
+        public void CalculateValidatedCart()
         {
-            PendingCart pendingCart = new();
-            pendingCart.products.Add("1");
-            pendingCart.products.Add("2");
-            pendingCart.products.Add("2");
-            carts.TryAdd(accountTestId, pendingCart);
+            ValidatedCart cart = new ValidatedCart(CreateDefaultListOfThreeProducts());
+            carts.TryAdd(accountTestId, cart);
             if (carts.Count() != 1)
             {
                 Assert.Fail();
             }
 
-            ValidateCartWorkflow workflow = new(mockDbContext.Object);
+            CalculateCartWorkflow workflow = new(mockDbContext.Object);
             GeneralWorkflowResponse response = workflow.Execute(accountTestId).Result;
 
             Assert.IsTrue(response.Success);
-            Assert.That(carts.First().Value, Is.TypeOf<ValidatedCart>());
-            var resultCart = (ValidatedCart)carts.First().Value;
-            Assert.That(resultCart.products.Count(), Is.EqualTo(2));
-        }
-
-        [Test]
-        public void ValidatedPendingCartWithInvalidProduct()
-        {
-            PendingCart pendingCart = new();
-            pendingCart.products.Add("1");
-            pendingCart.products.Add("2");
-            pendingCart.products.Add("2");
-            pendingCart.products.Add("20");
-            carts.TryAdd(accountTestId, pendingCart);
-            if (carts.Count() != 1)
-            {
-                Assert.Fail();
-            }
-
-            ValidateCartWorkflow workflow = new(mockDbContext.Object);
-            GeneralWorkflowResponse response = workflow.Execute(accountTestId).Result;
-
-            Assert.IsFalse(response.Success);
-            Assert.That(carts.First().Value, Is.TypeOf<PendingCart>());
-            Assert.That(response.Message, Is.EqualTo("Invalid product in cart"));
-
+            Assert.That(carts.First().Value, Is.TypeOf<CalculatedCart>());
+            var resultCart = (CalculatedCart)carts.First().Value;
+            Assert.That(resultCart.products.Count(), Is.EqualTo(3));
         }
 
         public static IEnumerable<TestCaseData> CartTestCases
         {
             get
             {
-                yield return new TestCaseData(new ValidatedCart(CreateDefaultListOfThreeProducts()), "Is a validated cart");
+                yield return new TestCaseData(new PendingCart(), "Is a pending cart");
                 yield return new TestCaseData(new CalculatedCart(CreateDefaultListOfThreeProducts(), 6), "Is a calculated cart");
                 yield return new TestCaseData(new EmptyCart(), "Is an empty cart");
                 yield return new TestCaseData(new PaidCart(CreateDefaultListOfThreeProducts(), 6, DateTime.Now.Date), "Is a paid cart");
@@ -109,7 +80,7 @@ namespace ShoppingApp.Test.Workflows
 
         [Test]
         [TestCaseSource(nameof(CartTestCases))]
-        public void ValidatedDiffrentCarts(ICart cart, string expectedMessage)
+        public void TryToCalculateDiffrentCarts(ICart cart, string expectedMessage)
         {
             carts.TryAdd(accountTestId, cart);
             if (carts.Count() != 1)
@@ -117,7 +88,7 @@ namespace ShoppingApp.Test.Workflows
                 Assert.Fail();
             }
 
-            ValidateCartWorkflow workflow = new(mockDbContext.Object);
+            CalculateCartWorkflow workflow = new(mockDbContext.Object);
             GeneralWorkflowResponse response = workflow.Execute(accountTestId).Result;
 
             Assert.IsFalse(response.Success);
