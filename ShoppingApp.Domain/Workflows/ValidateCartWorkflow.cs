@@ -54,21 +54,21 @@ namespace ShoppingApp.Domain.Workflows
                 whenValidatedCart: @event =>
                 {
                     response.Success = false;
-                    response.Message = "Is an empty cart";
+                    response.Message = "Is a validated cart";
                     response.StatusCode = 403;
                     return @event;
                 },
                 whenCalculatedCart: @event =>
                 {
                     response.Success = false;
-                    response.Message = "Is an empty cart";
+                    response.Message = "Is a calculated cart";
                     response.StatusCode = 403;
                     return @event;
                 },
                 whenPaidCart: @event =>
                 {
                     response.Success = false;
-                    response.Message = "Is an empty cart";
+                    response.Message = "Is a paid cart";
                     response.StatusCode = 403;
                     return @event;
                 }
