@@ -31,15 +31,13 @@ namespace ShoppingApp.Domain.Workflows
                 },
                 whenPendingCart: pendingCart =>
                 {
-                    response.Success = true;
-                    response.StatusCode = 200;
                     Task task = Task.Run(async () =>
                     {
                         await service.RemoveProductFromCart(pendingCart, productCode);
                         if (await CartsRepository.ChangeCartState(accountID, pendingCart))
                         {
                             response.Success = true;
-                            response.StatusCode = 201;
+                            response.StatusCode = 200;
                         }
                     });
                     task.Wait();
@@ -62,7 +60,7 @@ namespace ShoppingApp.Domain.Workflows
                         if (await CartsRepository.ChangeCartState(accountID, pendingCart))
                         {
                             response.Success = true;
-                            response.StatusCode = 201;
+                            response.StatusCode = 200;
                         }
                     });
                     task.Wait();
@@ -85,7 +83,7 @@ namespace ShoppingApp.Domain.Workflows
                         if (await CartsRepository.ChangeCartState(accountID, pendingCart))
                         {
                             response.Success = true;
-                            response.StatusCode = 201;
+                            response.StatusCode = 200;
                         }
                     });
                     task.Wait();
