@@ -33,17 +33,6 @@ namespace ShoppingApp.Domain.Services
             accountService = new(dbContextFactory);
         }
 
-        private struct ProductInfo
-        {
-            public int Quantity { get; set; }
-            public double Price { get; set; }
-
-            public ProductInfo(int quantity, double price)
-            {
-                Quantity = quantity;
-                Price = price;
-            }
-        }
         public async Task PlaceOrder(string accountID, PaidCart paidCart)
         {
             Account account = await accountService.GetAccountById(accountID);
