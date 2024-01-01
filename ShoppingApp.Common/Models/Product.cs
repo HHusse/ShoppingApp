@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-namespace ShoppingApp.Domain.Models
+namespace ShoppingApp.Common.Models
 {
     public class Product
     {

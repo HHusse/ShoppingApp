@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 25.0.1706.7
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingApp.Accomodation.EventProcessor", "ShoppingApp.Accomodation.EventProcessor.csproj", "{EA727ED0-A876-4E10-B72F-40F0B74CD4B1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA727ED0-A876-4E10-B72F-40F0B74CD4B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA727ED0-A876-4E10-B72F-40F0B74CD4B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA727ED0-A876-4E10-B72F-40F0B74CD4B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA727ED0-A876-4E10-B72F-40F0B74CD4B1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0747D2EE-BA39-4BAC-910B-34F48E63D954}
+	EndGlobalSection
+EndGlobal

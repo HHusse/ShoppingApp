@@ -3,13 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 25.0.1706.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingApp", "ShoppingApp\ShoppingApp.csproj", "{9F2F67A2-B897-4BD6-8E41-3105F259D0F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingApp.Accommodation.EventProcessor", "ShoppingApp.Accommodation.EventProcessor\ShoppingApp.Accommodation.EventProcessor.csproj", "{9F2F67A2-B897-4BD6-8E41-3105F259D0F6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingApp.Domain", "ShoppingApp.Domain\ShoppingApp.Domain.csproj", "{A5FBDDC6-F28C-47C5-BD49-B44635268F6B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingApp.Data", "ShoppingApp.Data\ShoppingApp.Data.csproj", "{365123E3-80D5-4C04-AB8A-F018B92556D2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingApp.API", "ShoppingApp.API\ShoppingApp.API.csproj", "{F1E77C1F-9968-4B83-BBD5-B2ECB9D6A2C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingApp.Events", "ShoppingApp.Events\ShoppingApp.Events.csproj", "{E3EB6192-F295-45C7-B077-A26ECCC71AE5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingApp.Events.ServiceBus", "ShoppingApp.Events.ServiceBus\ShoppingApp.Events.ServiceBus.csproj", "{527669B8-313D-4A66-86FB-BBEA91E3E00F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingApp.Common", "ShoppingApp.Common\ShoppingApp.Common.csproj", "{ECBC33E5-57DB-4563-9230-F4E18A2F9B56}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +39,18 @@ Global
 		{F1E77C1F-9968-4B83-BBD5-B2ECB9D6A2C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1E77C1F-9968-4B83-BBD5-B2ECB9D6A2C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1E77C1F-9968-4B83-BBD5-B2ECB9D6A2C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3EB6192-F295-45C7-B077-A26ECCC71AE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3EB6192-F295-45C7-B077-A26ECCC71AE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3EB6192-F295-45C7-B077-A26ECCC71AE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3EB6192-F295-45C7-B077-A26ECCC71AE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{527669B8-313D-4A66-86FB-BBEA91E3E00F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{527669B8-313D-4A66-86FB-BBEA91E3E00F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{527669B8-313D-4A66-86FB-BBEA91E3E00F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{527669B8-313D-4A66-86FB-BBEA91E3E00F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECBC33E5-57DB-4563-9230-F4E18A2F9B56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECBC33E5-57DB-4563-9230-F4E18A2F9B56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECBC33E5-57DB-4563-9230-F4E18A2F9B56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECBC33E5-57DB-4563-9230-F4E18A2F9B56}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
