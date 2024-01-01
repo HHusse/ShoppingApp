@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Azure;
 using Data;
+using ShoppingApp.Data;
 using ShoppingApp.Domain.Models;
 using ShoppingApp.Domain.ResponseModels;
 using ShoppingApp.Domain.Services;
@@ -14,17 +15,17 @@ namespace ShoppingApp.Domain.Workflows
 {
     public class PayCartWorkflow
     {
-        private readonly ShoppingAppDbContext _dbContext;
+        private readonly IDbContextFactory dbContextFactory;
 
-        public PayCartWorkflow(ShoppingAppDbContext dbContext)
+        public PayCartWorkflow(IDbContextFactory dbContextFactory)
         {
-            _dbContext = dbContext;
+            this.dbContextFactory = dbContextFactory;
         }
 
         public async Task<GeneralWorkflowResponse> Execute(string accountID)
         {
             ICart searchedCart = await CartsRepository.GetCart(accountID);
-            CartService service = new(_dbContext);
+            CartService service = new(dbContextFactory);
 
             GeneralWorkflowResponse response = new();
             searchedCart.Match(

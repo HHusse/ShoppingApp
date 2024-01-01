@@ -1,6 +1,7 @@
 ﻿using System;
 using Data;
 using LanguageExt;
+using ShoppingApp.Data;
 using ShoppingApp.Domain.Models;
 using ShoppingApp.Domain.ResponseModels;
 using ShoppingApp.Domain.Services;
@@ -10,16 +11,16 @@ namespace ShoppingApp.Domain.Workflows
 {
     public class ValidateCartWorkflow
     {
-        private readonly ShoppingAppDbContext _dbContext;
+        private readonly IDbContextFactory dbContextFactory;
 
-        public ValidateCartWorkflow(ShoppingAppDbContext dbContext)
+        public ValidateCartWorkflow(IDbContextFactory dbContextFactory)
         {
-            _dbContext = dbContext;
+            this.dbContextFactory = dbContextFactory;
         }
 
         public async Task<GeneralWorkflowResponse> Execute(string accountID)
         {
-            CartService service = new(_dbContext);
+            CartService service = new(dbContextFactory);
             ICart searchedCart = await CartsRepository.GetCart(accountID);
 
             GeneralWorkflowResponse response = new();

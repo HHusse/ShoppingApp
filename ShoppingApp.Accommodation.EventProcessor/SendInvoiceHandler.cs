@@ -37,11 +37,13 @@ namespace ShoppingApp.Accommodation.EventProcessor
         {
             string user = Environment.GetEnvironmentVariable("CREDENTIALUSER")!;
             string password = Environment.GetEnvironmentVariable("CREDENTIALPASS")!;
-            using (var smtpClient = new SmtpClient("smtp-mail.outlook.com", 587))
+            string smtpServer = Environment.GetEnvironmentVariable("SMTPSERVER")!;
+            int smtpPort = Convert.ToInt32(Environment.GetEnvironmentVariable("SMTPPORT"));
+            using (var smtpClient = new SmtpClient(smtpServer, smtpPort))
             {
                 var mailMessage = new MailMessage
                 {
-                    From = new MailAddress("shoppingapppssc@outlook.com", "ShoppingExpress"),
+                    From = new MailAddress(user, "ShoppingExpress"),
                     Subject = $"Factura #{invoiceId}",
                     Body = $"Dragă {clientName},\n\nVrem să-ți exprimăm sinceră noastră recunoștință pentru " +
                     $"că ai ales să cumperi de la ShoppingExpress. Fiecare client este important pentru noi, iar " +
@@ -54,7 +56,7 @@ namespace ShoppingApp.Accommodation.EventProcessor
                 mailMessage.To.Add(emailAddress);
                 mailMessage.Attachments.Add(new Attachment(pdfFilePath));
 
-                smtpClient.Credentials = new NetworkCredential("shoppingapppssc@outlook.com", "?032lMa@u)Sn2e8RiY");
+                smtpClient.Credentials = new NetworkCredential(user, password);
                 smtpClient.EnableSsl = true;
 
                 await smtpClient.SendMailAsync(mailMessage);

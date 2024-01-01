@@ -11,18 +11,20 @@ using Microsoft.Identity.Client;
 using ShoppingApp.Data.Repositories;
 using ShoppingApp.Domain.Models;
 using static ShoppingApp.Domain.Models.Cart;
+using ShoppingApp.Common.Models;
+using ShoppingApp.Data;
 
 namespace ShoppingApp.Domain.Services
 {
     internal class CartService
     {
-        private readonly ShoppingAppDbContext _dbContext;
+        private readonly IDbContextFactory dbContextFactory;
         ProductService productService;
 
-        public CartService(ShoppingAppDbContext dbContext)
+        public CartService(IDbContextFactory dbContextFactory)
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            productService = new(_dbContext);
+            this.dbContextFactory = dbContextFactory;
+            productService = new(dbContextFactory);
         }
 
         public async Task<bool> AddProductToCart(PendingCart cart, string productCode)

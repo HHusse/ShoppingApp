@@ -1,6 +1,10 @@
 ﻿using Data;
 using LanguageExt.ClassInstances;
+using ShoppingApp.Common.Models;
+using ShoppingApp.Data;
 using ShoppingApp.Data.Repositories;
+using ShoppingApp.Domain.Models;
+using ShoppingApp.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,17 +16,21 @@ namespace ShoppingApp.Domain.Services
 {
     public class OrderService
     {
-        private readonly ShoppingAppDbContext _dbContext;
+        private readonly IDbContextFactory dbContextFactory;
         OrderHeaderRepository orderHeaderRepository;
         OrderLineRepository orderLineRepository;
         ProductRepository productRepository;
+        AccountService accountService;
+        IEventSender sender;
 
-        public OrderService(ShoppingAppDbContext dbContext)
+        public OrderService(IDbContextFactory dbContextFactory, IEventSender sender)
         {
-            _dbContext = dbContext;
-            orderHeaderRepository = new(_dbContext);
-            orderLineRepository = new(_dbContext);
-            productRepository = new(_dbContext);
+            this.dbContextFactory = dbContextFactory;
+            this.sender = sender;
+            orderHeaderRepository = new(dbContextFactory.CreateDbContext());
+            orderLineRepository = new(dbContextFactory.CreateDbContext());
+            productRepository = new(dbContextFactory.CreateDbContext());
+            accountService = new(dbContextFactory);
         }
 
         private struct ProductInfo
@@ -38,13 +46,15 @@ namespace ShoppingApp.Domain.Services
         }
         public async Task PlaceOrder(string accountID, PaidCart paidCart)
         {
+            Account account = await accountService.GetAccountById(accountID);
             string headerUid = await orderHeaderRepository.CreateNewOrderHeader(accountID, paidCart.data.ToString(), paidCart.finalPrice);
             foreach (var product in paidCart.products)
             {
                 await productRepository.RemoveQuantity(product.Uid, product.Quantity);
                 await orderLineRepository.AddProductLine(product.Quantity, product.Price, headerUid, product.Uid);
             }
-
+            InvoiceDetails invoice = new(account.Email!, headerUid, (account.FirstName + " " + account.LastName), "ShoppingExpress", account.Address!, account.PhoneNumber!, (List<Product>)paidCart.products);
+            await sender.SendAsync("invoicequeue", invoice);
         }
     }
 }

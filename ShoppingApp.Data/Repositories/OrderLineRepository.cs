@@ -12,7 +12,6 @@ namespace ShoppingApp.Data.Repositories
     public class OrderLineRepository
     {
         private readonly ShoppingAppDbContext _dbContext;
-
         public OrderLineRepository(ShoppingAppDbContext dbContext)
         {
             _dbContext = dbContext;

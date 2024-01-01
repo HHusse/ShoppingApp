@@ -1,6 +1,7 @@
 ﻿using System;
 using Data;
 using Microsoft.AspNetCore.Mvc;
+using ShoppingApp.Data;
 using ShoppingApp.Domain.Models;
 using ShoppingApp.Domain.ResponseModels;
 using ShoppingApp.Domain.Workflows;
@@ -11,17 +12,17 @@ namespace ShoppingApp.API.Controllers
     [ApiController]
     public class AuthenticationController : Controller
     {
-        private readonly ShoppingAppDbContext _dbContext;
-        public AuthenticationController(ShoppingAppDbContext context)
+        private readonly IDbContextFactory dbContextFactory;
+        public AuthenticationController(IDbContextFactory dbContextFactory)
         {
-            _dbContext = context;
+            this.dbContextFactory = dbContextFactory;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(string lastName, string firstName, string email, string phoneNumber, string address, string password)
         {
             Account newAccount = new Account(lastName, firstName, email.ToLower(), phoneNumber, address, password);
-            RegisterWorkflow workflow = new(_dbContext);
+            RegisterWorkflow workflow = new(dbContextFactory);
             GeneralWorkflowResponse res = await workflow.Execute(newAccount);
 
             return res.Success ? StatusCode(res.StatusCode) : StatusCode(res.StatusCode, new { message = res.Message });
@@ -30,7 +31,7 @@ namespace ShoppingApp.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(string email, string password)
         {
-            LoginWorkflow workflow = new(_dbContext);
+            LoginWorkflow workflow = new(dbContextFactory);
             var result = await workflow.Execute(email.ToLower(), password);
             string token = result.Match(
                 some => some,

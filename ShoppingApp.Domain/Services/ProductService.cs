@@ -9,18 +9,19 @@ using ShoppingApp.Domain.Models;
 using LanguageExt;
 using ShoppingApp.Data.Models;
 using ShoppingApp.Domain.Mappers;
-
+using ShoppingApp.Common.Models;
+using ShoppingApp.Data;
 
 namespace ShoppingApp.Domain.Services
 {
     public class ProductService
     {
-        private readonly ShoppingAppDbContext _dbContext;
+        private readonly IDbContextFactory dbContextFactory;
         ProductRepository productRepository;
-        public ProductService(ShoppingAppDbContext dbContext)
+        public ProductService(IDbContextFactory dbContextFactory)
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            productRepository = new(_dbContext);
+            this.dbContextFactory = dbContextFactory;
+            productRepository = new(dbContextFactory.CreateDbContext());
         }
         public async Task<Option<Product>> ValidateProduct(string productCode)
         {

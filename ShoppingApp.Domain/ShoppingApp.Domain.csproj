@@ -25,5 +25,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ShoppingApp.Data\ShoppingApp.Data.csproj" />
+    <ProjectReference Include="..\ShoppingApp.Common\ShoppingApp.Common.csproj" />
+    <ProjectReference Include="..\ShoppingApp.Events.ServiceBus\ShoppingApp.Events.ServiceBus.csproj" />
+    <ProjectReference Include="..\ShoppingApp.Events\ShoppingApp.Events.csproj" />
   </ItemGroup>
 </Project>

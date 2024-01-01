@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using Azure.Core;
 using Data;
+using ShoppingApp.Data;
 using ShoppingApp.Domain.Models;
 using ShoppingApp.Domain.ResponseModels;
 using ShoppingApp.Domain.Services;
@@ -10,11 +11,11 @@ namespace ShoppingApp.Domain.Workflows
 {
     public class RegisterWorkflow
     {
-        private readonly ShoppingAppDbContext _dbContext;
+        private readonly IDbContextFactory dbContextFactory;
 
-        public RegisterWorkflow(ShoppingAppDbContext dbContext)
+        public RegisterWorkflow(IDbContextFactory dbContextFactory)
         {
-            _dbContext = dbContext;
+            this.dbContextFactory = dbContextFactory;
         }
 
         public async Task<GeneralWorkflowResponse> Execute(Account newAccount)
@@ -39,7 +40,7 @@ namespace ShoppingApp.Domain.Workflows
                 return response;
             }
 
-            AccountService service = new(newAccount, _dbContext);
+            AccountService service = new(newAccount, dbContextFactory);
             bool succeded = service.RegisterAccount().Result;
             if (succeded)
             {

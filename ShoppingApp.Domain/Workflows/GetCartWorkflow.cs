@@ -1,5 +1,6 @@
 ﻿using System;
 using Data;
+using ShoppingApp.Data;
 using ShoppingApp.Domain.Models;
 using ShoppingApp.Domain.ResponseModels;
 using ShoppingApp.Domain.Services;
@@ -9,15 +10,15 @@ namespace ShoppingApp.Domain.Workflows
 {
     public class GetCartWorkflow
     {
-        private readonly ShoppingAppDbContext _dbContext;
+        private readonly IDbContextFactory dbContextFactory;
 
-        public GetCartWorkflow(ShoppingAppDbContext dbContext)
+        public GetCartWorkflow(IDbContextFactory dbContextFactory)
         {
-            _dbContext = dbContext;
+            this.dbContextFactory = dbContextFactory;
         }
         public async Task<CartResponse> Execute(string accountID)
         {
-            CartService service = new(_dbContext);
+            CartService service = new(dbContextFactory);
 
             ICart searchedCart = await CartsRepository.GetCart(accountID);
 

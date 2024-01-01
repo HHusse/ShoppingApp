@@ -1,7 +1,9 @@
 ﻿using Azure;
 using Data;
+using ShoppingApp.Data;
 using ShoppingApp.Domain.ResponseModels;
 using ShoppingApp.Domain.Services;
+using ShoppingApp.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,17 +15,19 @@ namespace ShoppingApp.Domain.Workflows
 {
     public class PlaceOrderWorkflow
     {
-        private readonly ShoppingAppDbContext _dbContext;
+        private readonly IDbContextFactory dbContextFactory;
+        IEventSender sender;
 
-        public PlaceOrderWorkflow(ShoppingAppDbContext dbContext)
+        public PlaceOrderWorkflow(IDbContextFactory dbContextFactory, IEventSender sender)
         {
-            _dbContext = dbContext;
+            this.dbContextFactory = dbContextFactory;
+            this.sender = sender;
         }
 
         public async Task<GeneralWorkflowResponse> Execute(string accountID)
         {
             ICart searchedCart = await CartsRepository.GetCart(accountID);
-            OrderService service = new(_dbContext);
+            OrderService service = new(dbContextFactory, sender);
 
             GeneralWorkflowResponse response = new();
             searchedCart.Match(
@@ -60,14 +64,10 @@ namespace ShoppingApp.Domain.Workflows
                     Task task = Task.Run(async () =>
                     {
                         await service.PlaceOrder(accountID, paidCart);
-                        if (await CartsRepository.RemoveCart(accountID))
-                        {
-                            response.Success = true;
-                            response.StatusCode = 200;
-                        }
+                        await CartsRepository.RemoveCart(accountID);
                     });
-                    task.Wait();
-
+                    response.Success = true;
+                    response.StatusCode = 202;
                     return paidCart;
                 }
             );

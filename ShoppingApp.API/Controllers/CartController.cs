@@ -2,10 +2,12 @@
 using Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ShoppingApp.Data;
 using ShoppingApp.Domain;
 using ShoppingApp.Domain.ResponseModels;
 using ShoppingApp.Domain.Services;
 using ShoppingApp.Domain.Workflows;
+using ShoppingApp.Events;
 using static ShoppingApp.Domain.Models.Cart;
 
 namespace ShoppingApp.API.Controllers
@@ -14,10 +16,12 @@ namespace ShoppingApp.API.Controllers
     [ApiController]
     public class CartController : Controller
     {
-        private readonly ShoppingAppDbContext _dbContext;
-        public CartController(ShoppingAppDbContext context)
+        private readonly IDbContextFactory dbContextFactory;
+        private readonly IEventSender _sender;
+        public CartController(IDbContextFactory dbContextFactory, IEventSender sender)
         {
-            _dbContext = context;
+            this.dbContextFactory = dbContextFactory;
+            _sender = sender;
         }
 
         [HttpPost("product")]
@@ -32,7 +36,7 @@ namespace ShoppingApp.API.Controllers
                     () => ""
                 );
 
-            AddProductsWorkflow workflow = new(_dbContext);
+            AddProductsWorkflow workflow = new(dbContextFactory);
             GeneralWorkflowResponse res = await workflow.Execute(accountID, productCode);
             return res.Success ? StatusCode(res.StatusCode) : StatusCode(res.StatusCode, new { message = res.Message });
         }
@@ -49,7 +53,7 @@ namespace ShoppingApp.API.Controllers
                     () => ""
                 );
 
-            RemoveProductWorkflow workflow = new(_dbContext);
+            RemoveProductWorkflow workflow = new(dbContextFactory);
             GeneralWorkflowResponse res = await workflow.Execute(accountID, productCode);
             return res.Success ? StatusCode(res.StatusCode) : StatusCode(res.StatusCode, new { message = res.Message });
 
@@ -67,7 +71,7 @@ namespace ShoppingApp.API.Controllers
                     () => ""
                 );
 
-            PayCartWorkflow workflow = new(_dbContext);
+            PayCartWorkflow workflow = new(dbContextFactory);
             GeneralWorkflowResponse res = await workflow.Execute(accountID);
             return res.Success ? StatusCode(res.StatusCode) : StatusCode(res.StatusCode, new { message = res.Message });
 
@@ -85,7 +89,7 @@ namespace ShoppingApp.API.Controllers
                     () => ""
                 );
 
-            ValidateCartWorkflow workflow = new(_dbContext);
+            ValidateCartWorkflow workflow = new(dbContextFactory);
             GeneralWorkflowResponse res = await workflow.Execute(accountID);
             return res.Success ? StatusCode(res.StatusCode) : StatusCode(res.StatusCode, new { message = res.Message });
 
@@ -103,7 +107,7 @@ namespace ShoppingApp.API.Controllers
                     () => ""
                 );
 
-            CalculateCartWorkflow workflow = new(_dbContext);
+            CalculateCartWorkflow workflow = new(dbContextFactory);
             GeneralWorkflowResponse res = await workflow.Execute(accountID);
             return res.Success ? StatusCode(res.StatusCode) : StatusCode(res.StatusCode, new { message = res.Message });
 
@@ -121,7 +125,7 @@ namespace ShoppingApp.API.Controllers
                     () => ""
                 );
 
-            PlaceOrderWorkflow workflow = new(_dbContext);
+            PlaceOrderWorkflow workflow = new(dbContextFactory, _sender);
             GeneralWorkflowResponse res = await workflow.Execute(accountID);
             return res.Success ? StatusCode(res.StatusCode) : StatusCode(res.StatusCode, new { message = res.Message });
 
@@ -139,7 +143,7 @@ namespace ShoppingApp.API.Controllers
                     () => ""
                 );
 
-            GetCartWorkflow workflow = new(_dbContext);
+            GetCartWorkflow workflow = new(dbContextFactory);
             CartResponse res = await workflow.Execute(accountID);
 
             return StatusCode(200, res);
@@ -157,7 +161,7 @@ namespace ShoppingApp.API.Controllers
                     () => ""
                 );
 
-            CleanUpCartWorkflow workflow = new(_dbContext);
+            CleanUpCartWorkflow workflow = new(dbContextFactory);
             GeneralWorkflowResponse res = await workflow.Execute(accountID);
 
             return res.Success ? StatusCode(res.StatusCode) : StatusCode(res.StatusCode, new { message = res.Message });

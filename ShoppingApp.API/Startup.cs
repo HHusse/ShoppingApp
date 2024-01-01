@@ -2,9 +2,13 @@
 using System.Text;
 using Data;
 using Microsoft.EntityFrameworkCore;
+using ShoppingApp.Events.ServiceBus;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using ShoppingApp.Events;
+using Microsoft.Extensions.Azure;
+using ShoppingApp.Data;
 
 namespace ShoppingApp.API
 {
@@ -21,7 +25,7 @@ namespace ShoppingApp.API
         {
             services.AddControllers();
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+            services.AddSingleton<IDbContextFactory, DbContextFactory>();
             services.AddDbContext<ShoppingAppDbContext>(opt =>
             {
                 opt.UseSqlServer(Environment.GetEnvironmentVariable("DBCONNECTIONSTRING"));
@@ -44,6 +48,11 @@ namespace ShoppingApp.API
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRETKEY")!))
                 }
             );
+            services.AddSingleton<IEventSender, ServiceBusTopicEventSender>();
+            services.AddAzureClients(builder =>
+            {
+                builder.AddServiceBusClient(Environment.GetEnvironmentVariable("SERVICEBUS"));
+            });
             using (var dbContext = new ShoppingAppDbContext())
             {
                 dbContext.Database.Migrate();
@@ -52,13 +61,6 @@ namespace ShoppingApp.API
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Example.Api v1"));
-            }
-
             app.UseHttpsRedirection();
 
             app.UseCors();

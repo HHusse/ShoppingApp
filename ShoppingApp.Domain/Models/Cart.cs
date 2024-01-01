@@ -1,5 +1,6 @@
 ﻿using System;
 using CSharp.Choices;
+using ShoppingApp.Common.Models;
 
 namespace ShoppingApp.Domain.Models
 {

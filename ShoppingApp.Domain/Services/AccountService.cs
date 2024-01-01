@@ -1,6 +1,8 @@
 ﻿using System;
 using Data;
+using LanguageExt.Pretty;
 using Microsoft.EntityFrameworkCore;
+using ShoppingApp.Data;
 using ShoppingApp.Data.Models;
 using ShoppingApp.Data.Repositories;
 using ShoppingApp.Domain.Mappers;
@@ -10,42 +12,32 @@ namespace ShoppingApp.Domain.Services
 {
     public class AccountService
     {
-        private readonly ShoppingAppDbContext _dbContext;
+        private readonly IDbContextFactory dbContextFactory;
         AccountRepository accountRepository;
         public Account? Account { get; set; }
 
-        public AccountService(Account? account, ShoppingAppDbContext dbContext)
+        public AccountService(Account? account, IDbContextFactory dbContextFactory)
         {
+            this.dbContextFactory = dbContextFactory;
             Account = account;
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            accountRepository = new(_dbContext);
+            accountRepository = new(dbContextFactory.CreateDbContext());
         }
 
-        public AccountService(ShoppingAppDbContext dbContext)
+        public AccountService(IDbContextFactory dbContextFactory)
         {
+            this.dbContextFactory = dbContextFactory;
             Account = null;
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            accountRepository = new(_dbContext);
+            accountRepository = new(dbContextFactory.CreateDbContext());
         }
 
         public async Task<bool> RegisterAccount()
         {
-            try
-            {
-                return await accountRepository.CreateAccount(AccountMapper.MapToAccountDTO(Account!));
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return await accountRepository.CreateAccount(AccountMapper.MapToAccountDTO(Account!));
         }
 
-        public async Task<Account> GetAccount(string? email) => AccountMapper.MapToAccount(await accountRepository.GetAccountByEmail(email));
+        public async Task<Account> GetAccountByEmail(string? email) => AccountMapper.MapToAccount(await accountRepository.GetAccountByEmail(email));
 
-
-
-
-
+        public async Task<Account> GetAccountById(string? id) => AccountMapper.MapToAccount(await accountRepository.GetAccountById(id));
 
     }
 }

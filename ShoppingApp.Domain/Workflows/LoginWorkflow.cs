@@ -2,6 +2,7 @@
 using Azure.Core;
 using Data;
 using LanguageExt;
+using ShoppingApp.Data;
 using ShoppingApp.Domain.Models;
 using ShoppingApp.Domain.Services;
 
@@ -9,17 +10,17 @@ namespace ShoppingApp.Domain.Workflows
 {
     public class LoginWorkflow
     {
-        private readonly ShoppingAppDbContext _dbContext;
+        private readonly IDbContextFactory dbContextFactory;
 
-        public LoginWorkflow(ShoppingAppDbContext dbContext)
+        public LoginWorkflow(IDbContextFactory dbContextFactory)
         {
-            _dbContext = dbContext;
+            this.dbContextFactory = dbContextFactory;
         }
 
         public async Task<Option<string>> Execute(string email, string password)
         {
-            AccountService service = new(_dbContext);
-            Account account = await service.GetAccount(email);
+            AccountService service = new(dbContextFactory);
+            Account account = await service.GetAccountByEmail(email);
             if (account is null || !BCrypt.Net.BCrypt.Verify(password, account.Password))
             {
                 return Option<string>.None;
