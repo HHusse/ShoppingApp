@@ -1,4 +1,8 @@
 ﻿using System;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using ShoppingApp.Data.Models;
 using ShoppingApp.Domain.Models;
 
@@ -49,6 +53,13 @@ namespace ShoppingApp.Test
                 new("2", "2", "2", 1, 2),
                 new("3", "3", "3", 1, 3),
             };
+        public static List<Product> CreateDefaultListOfInexistentProducts() =>
+            new List<Product>()
+            {
+                new("16", "16", "16", 1, 1),
+                new("26", "26", "26", 1, 2),
+                new("36", "36", "36", 1, 3),
+            };
 
         public static void CreateFakeProducts(ref List<ProductDTO> products)
         {
@@ -84,6 +95,28 @@ namespace ShoppingApp.Test
                 Quantity = 30,
                 Price = 40
             });
+        }
+        public static string CreateFakeToken()
+        {
+            List<Claim> claims = new List<Claim> {
+            
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRETKEY")!));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+
+            var issuer = "ShoppingApp";
+
+            var token = new JwtSecurityToken(
+                    issuer: issuer,
+                    claims: claims,
+                    expires: DateTime.Now.AddDays(1),
+                    signingCredentials: creds
+                );
+            var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwtToken;
         }
     }
 }

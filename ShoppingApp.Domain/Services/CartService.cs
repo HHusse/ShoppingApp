@@ -14,7 +14,7 @@ using static ShoppingApp.Domain.Models.Cart;
 
 namespace ShoppingApp.Domain.Services
 {
-    internal class CartService
+    public class CartService
     {
         private readonly ShoppingAppDbContext _dbContext;
         ProductService productService;
