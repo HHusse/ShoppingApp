@@ -39,6 +39,7 @@ namespace ShoppingApp.API
                            .AllowAnyMethod();
                 });
             });
+
             services.AddAuthentication().AddJwtBearer(optional =>
                 optional.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -61,8 +62,6 @@ namespace ShoppingApp.API
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseHttpsRedirection();
-
             app.UseCors();
 
             app.UseRouting();

@@ -54,17 +54,25 @@ namespace ShoppingApp.Domain.Workflows
                 },
                 whenValidatedCart: @event =>
                 {
-                    response.Success = false;
-                    response.Message = "Is a validated cart";
-                    response.StatusCode = 403;
+                    response.Success = true;
+                    response.StatusCode = 200;
                     return @event;
                 },
-                whenCalculatedCart: @event =>
+                whenCalculatedCart: calculatedCart =>
                 {
-                    response.Success = false;
-                    response.Message = "Is a calculated cart";
-                    response.StatusCode = 403;
-                    return @event;
+                    Task task = Task.Run(async () =>
+                    {
+
+                        ValidatedCart cart = new(calculatedCart.products);
+                        if (await CartsRepository.ChangeCartState(accountID, cart))
+                        {
+                            response.Success = true;
+                            response.StatusCode = 200;
+                        }
+                    });
+                    task.Wait();
+
+                    return calculatedCart;
                 },
                 whenPaidCart: @event =>
                 {

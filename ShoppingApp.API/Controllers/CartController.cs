@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,9 +25,15 @@ namespace ShoppingApp.API.Controllers
             _sender = sender;
         }
 
+        public class AddOrRemoveRequest
+        {
+            [Required]
+            public string? ProductCode { get; set; }
+        }
+
         [HttpPost("product")]
         [Authorize]
-        public async Task<IActionResult> AddProductroduct(string productCode)
+        public async Task<IActionResult> AddProductroduct([FromBody] AddOrRemoveRequest request)
         {
             var authorizationHeader = Request.Headers.Authorization;
             string token = authorizationHeader.ToString().Replace("Bearer ", "");
@@ -37,13 +44,13 @@ namespace ShoppingApp.API.Controllers
                 );
 
             AddProductsWorkflow workflow = new(dbContextFactory);
-            GeneralWorkflowResponse res = await workflow.Execute(accountID, productCode);
+            GeneralWorkflowResponse res = await workflow.Execute(accountID, request.ProductCode!);
             return res.Success ? StatusCode(res.StatusCode) : StatusCode(res.StatusCode, new { message = res.Message });
         }
 
         [HttpDelete("product")]
         [Authorize]
-        public async Task<IActionResult> DeleteProductroduct(string productCode)
+        public async Task<IActionResult> DeleteProductroduct([FromBody] AddOrRemoveRequest request)
         {
             var authorizationHeader = Request.Headers.Authorization;
             string token = authorizationHeader.ToString().Replace("Bearer ", "");
@@ -54,7 +61,7 @@ namespace ShoppingApp.API.Controllers
                 );
 
             RemoveProductWorkflow workflow = new(dbContextFactory);
-            GeneralWorkflowResponse res = await workflow.Execute(accountID, productCode);
+            GeneralWorkflowResponse res = await workflow.Execute(accountID, request.ProductCode!);
             return res.Success ? StatusCode(res.StatusCode) : StatusCode(res.StatusCode, new { message = res.Message });
 
         }

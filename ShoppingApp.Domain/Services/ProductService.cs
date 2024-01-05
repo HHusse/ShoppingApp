@@ -39,5 +39,20 @@ namespace ShoppingApp.Domain.Services
         {
             return await productRepository.GetQuantity(productCode);
         }
+
+        public async Task<List<Product>> GetAllProdcuts()
+        {
+            List<ProductDTO> productsDTO = await productRepository.GetAllProducts();
+            List<Product> products = new();
+
+            productsDTO.ForEach(p => products.Add(ProductMapper.MapToProduct(p)));
+            return products;
+        }
+
+        public async Task<Product> GetProductByUid(string productCode)
+        {
+            ProductDTO productDTO = await productRepository.GetProductByUid(productCode);
+            return ProductMapper.MapToProduct(productDTO);
+        }
     }
 }

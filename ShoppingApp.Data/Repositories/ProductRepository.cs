@@ -49,5 +49,16 @@ namespace ShoppingApp.Data.Repositories
             ProductDTO productDTO = await _dbContext.Products.FirstOrDefaultAsync(product => product.Uid == productCode);
             return productDTO.Quantity;
         }
+
+        public async Task<List<ProductDTO>> GetAllProducts()
+        {
+            return _dbContext.Products.ToList();
+        }
+
+        public async Task<ProductDTO> GetProductByUid(string productCode)
+        {
+            ProductDTO productDTO = await _dbContext.Products.FirstOrDefaultAsync(product => product.Uid == productCode);
+            return productDTO;
+        }
     }
 }
